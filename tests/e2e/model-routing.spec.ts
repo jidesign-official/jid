@@ -10,6 +10,7 @@ import { getProjectModelPath, getProjectModelPaths } from "../../src/lib/portfol
 import { modelProjects } from "./helpers/model-cases";
 import { getProjectDetailImages } from "../../src/lib/portfolioImages";
 import { sortPortfolioProjects } from "../../src/lib/portfolioOrdering";
+import { pickPortfolioTagline } from "../../src/lib/portfolioTaglines";
 
 // Execute the real server-page selection without importing client-only CSS/GSAP.
 // Client children are not rendered: their props expose the selected projects.
@@ -62,6 +63,7 @@ async function detailViewers(id: string) {
       if (dependency === "@/lib/portfolioModels") return { getProjectModelPath, getProjectModelPaths };
       if (dependency === "@/lib/portfolioImages") return { getProjectDetailImages };
       if (dependency === "@/lib/portfolioOrdering") return { sortPortfolioProjects };
+      if (dependency === "@/lib/portfolioTaglines") return { pickPortfolioTagline };
       if (dependency === "@/lib/basePath") return { getAssetPath: (assetPath: string) => assetPath };
       if (dependency.endsWith("portfolio_data.json")) return portfolioData;
       if (dependency === "@/components/portfolio/Model3DViewer") return ModelViewer;

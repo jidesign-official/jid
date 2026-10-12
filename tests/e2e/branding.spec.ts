@@ -8,7 +8,7 @@ const oldDisplayBrand = /jdesign studio|jiD design(?: studio)?|jdesign의|\[jdes
 const defaultDescription = "Innovative UI/UX, Branding & Web Design Portfolio";
 const routes = [
   { name: "home", path: "/", title: "JiD - Portfolio", description: defaultDescription },
-  { name: "about", path: "/about/", title: "About Us - JiD", description: "About JiD" },
+  { name: "about", path: "/about/", title: "About Us - JiD", description: "JiD는 아이디어를 제품으로, 제품을 브랜드의 가치로 연결하는 제품디자인 스튜디오입니다. 우리는 사용자의 경험과 시장의 요구를 탐구하며, 상상 속 가능성을 직관적인 제품 경험으로 구현합니다." },
   { name: "contact", path: "/contact/", title: "JiD - Portfolio", description: defaultDescription },
   { name: "contact thanks", path: "/contact/thanks/", title: "문의 전송 후 안내 | JiD", description: defaultDescription },
   { name: "portfolio", path: "/portfolio/", title: "Portfolio - JiD", description: "JiD의 혁신적인 프로젝트 포트폴리오입니다." },
@@ -50,7 +50,8 @@ test.describe("route branding", () => {
       }
       if (route.name === "jd001") {
         await expect.soft(page.getByRole("heading", { level: 1 })).toHaveText("현진기업 휴대용 정수기");
-        await expect.soft(page.getByText("JiD의 디테일과 심미성이 담긴 산업/의료/제품 디자인 포트폴리오입니다.", { exact: true })).toBeVisible();
+        await expect.soft(page.locator("main h1 + p")).toHaveText(/^(?:Design that bridges imagination and intuition|Between a question mark and an exclamation mark|Design Beyond Form)$/);
+        await expect.soft(page.locator("main")).not.toContainText("JiD의 디테일과 심미성이 담긴 산업/의료/제품 디자인 포트폴리오입니다.");
       }
     });
   }

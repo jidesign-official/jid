@@ -15,7 +15,7 @@ export default function Footer() {
           
           {/* Logo & Slogan */}
           <div className="flex flex-col gap-2">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2" aria-label="JiD 홈">
               <img
                 src={getAssetPath("/logo.png")}
                 alt="JiD"
@@ -26,12 +26,9 @@ export default function Footer() {
                 alt="JiD"
                 className="hidden dark:block h-6 w-auto object-contain"
               />
-              <span className="font-semibold text-sm text-[#1D1D1F] dark:text-[#F5F5F7]">
-                JiD
-              </span>
             </Link>
             <p className="text-xs text-[#1D1D1F]/60 dark:text-[#F5F5F7]/60">
-              디테일과 비주얼로 전하는 최고의 디지털 경험
+              From Imagination to Intuition
             </p>
           </div>
 

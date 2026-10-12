@@ -7,6 +7,7 @@ import { getAssetPath } from "@/lib/basePath";
 import { getProjectModelPaths } from "@/lib/portfolioModels";
 import { getProjectDetailImages } from "@/lib/portfolioImages";
 import { sortPortfolioProjects } from "@/lib/portfolioOrdering";
+import { pickPortfolioTagline } from "@/lib/portfolioTaglines";
 
 interface PortfolioItem {
   id: string;
@@ -82,7 +83,7 @@ export default async function PortfolioDetailPage({
             {project.title}
           </h1>
           <p className="mt-4 text-sm md:text-base text-[#1D1D1F]/60 dark:text-[#F5F5F7]/60 max-w-xl mx-auto">
-            {project.description || "JiD의 디테일과 심미성이 담긴 산업/의료/제품 디자인 포트폴리오입니다."}
+            {pickPortfolioTagline()}
           </p>
         </div>
 
