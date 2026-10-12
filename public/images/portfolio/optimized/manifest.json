@@ -66,6 +66,50 @@
     "displayBytes": 27572
   },
   {
+    "source": "public/images/portfolio/jd038/jd038_13.jpg",
+    "output": "public/images/portfolio/optimized/jd038/jd038_13.webp",
+    "sourceSha256": "03eeaea5ac6af2a10896e3505f3c0522ab592252da7e5529d0fba9a7e0621aa0",
+    "sourceBytes": 695803,
+    "width": 2970,
+    "height": 2100,
+    "displayWidth": 2048,
+    "displayHeight": 1448,
+    "displayBytes": 76128
+  },
+  {
+    "source": "public/images/portfolio/jd038/jd038_14.jpg",
+    "output": "public/images/portfolio/optimized/jd038/jd038_14.webp",
+    "sourceSha256": "a01be3b029291dd709a9c874c6bfab7753b63dbadd7e59805e148f7f569099bd",
+    "sourceBytes": 854876,
+    "width": 2970,
+    "height": 2100,
+    "displayWidth": 2048,
+    "displayHeight": 1448,
+    "displayBytes": 77364
+  },
+  {
+    "source": "public/images/portfolio/jd038/jd038_15.jpg",
+    "output": "public/images/portfolio/optimized/jd038/jd038_15.webp",
+    "sourceSha256": "c88b4fc9a893a2cd1b5c88df998d4df53fcde3a684198cf0a575f1cb0f6e713c",
+    "sourceBytes": 797585,
+    "width": 2970,
+    "height": 2100,
+    "displayWidth": 2048,
+    "displayHeight": 1448,
+    "displayBytes": 94622
+  },
+  {
+    "source": "public/images/portfolio/jd038/jd038_16.jpg",
+    "output": "public/images/portfolio/optimized/jd038/jd038_16.webp",
+    "sourceSha256": "26b16ff2ac3c8de7d95519511e32923a427b43486d96d978b37d9398c8c24005",
+    "sourceBytes": 592367,
+    "width": 2970,
+    "height": 2100,
+    "displayWidth": 2048,
+    "displayHeight": 1448,
+    "displayBytes": 43082
+  },
+  {
     "source": "public/images/portfolio/jd038/jd038_thumbs.jpg",
     "output": "public/images/portfolio/optimized/jd038/jd038_thumbs.webp",
     "sourceSha256": "844456704b7bf9d06326c0eee44f46cc346a4f9c276ecaddd44e43aac4a447d9",

@@ -110,25 +110,40 @@ async function sequence(page: Page) {
   return player;
 }
 
-test("jd038 export exposes one full-width sequence after its ordinary lightbox image", async ({ page }) => {
+test("jd038 export keeps one eleven-frame sequence after five ordinary images and includes 13 through 16 in the lightbox", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`${basePath}/portfolio/jd038`);
   const player = await sequence(page);
   await expect(page.locator("h1")).toHaveText(title);
-  await expect(page.getByText("총 12개의 상세 디자인 시안이 등록되어 있습니다.", { exact: false })).toBeVisible();
-  const image = page.locator('img[alt="STER SUTTLE 상세 이미지"]');
-  await expect(image).toHaveCount(1);
-  await expect(image).toHaveAttribute("src", `${basePath}/images/portfolio/optimized/jd038/jd038_1.webp`);
+  await expect(page.getByText("총 16개의 상세 디자인 시안이 등록되어 있습니다.", { exact: false })).toBeVisible();
+  const images = page.locator('img[alt="STER SUTTLE 상세 이미지"]');
+  const sources = [1, 13, 14, 15, 16].map((index) => `${basePath}/images/portfolio/optimized/jd038/jd038_${index}.webp`);
+  await expect(images).toHaveCount(5);
+  expect(await images.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("src")))).toEqual(sources);
   expect(await player.evaluate((el) => {
-    const image = document.querySelector('img[alt="STER SUTTLE 상세 이미지"]')!;
-    return Boolean(image.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const images = document.querySelectorAll('img[alt="STER SUTTLE 상세 이미지"]');
+    return Boolean(images[images.length - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
   })).toBe(true);
-  await image.click();
+  for (let index = 1; index < sources.length; index++) {
+    await images.nth(index).scrollIntoViewIfNeeded();
+    await expect.poll(() => images.nth(index).evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 2048 && image.naturalHeight > 0)).toBe(true);
+  }
+  await images.first().click();
+  const expanded = page.locator('img[alt="STER SUTTLE 상세 확대 시안"]');
   await expect(page.getByRole("button", { name: "닫기", exact: true })).toBeVisible();
-  await expect(page.locator('img[alt="STER SUTTLE 상세 확대 시안"]')).toHaveAttribute("src", `${basePath}/images/portfolio/optimized/jd038/jd038_1.webp`);
-  await expect(page.getByRole("button", { name: "다음 이미지", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "다음 이미지", exact: true })).toHaveCount(1);
+  for (const src of [...sources, sources[0]]) {
+    await expect(expanded).toHaveAttribute("src", src);
+    await expect.poll(() => expanded.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
+    await page.getByRole("button", { name: "다음 이미지", exact: true }).click();
+  }
+  await page.getByRole("button", { name: "이전 이미지", exact: true }).click();
+  await expect(expanded).toHaveAttribute("src", sources[0]);
+  await page.getByRole("button", { name: "이전 이미지", exact: true }).click();
+  await expect(expanded).toHaveAttribute("src", sources[sources.length - 1]);
   await page.getByRole("button", { name: "닫기", exact: true }).click();
+  await expect(expanded).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 

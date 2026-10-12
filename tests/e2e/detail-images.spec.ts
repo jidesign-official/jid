@@ -35,6 +35,18 @@ test("JPEG sequence metadata preserves all eleven supplied 730x400 frame dimensi
   }
 });
 
+test("jd038 discovers all sixteen source images and displays 13 through 16 as bounded ordinary images", () => {
+  const images = detailImages("jd038");
+  expect(images.map((image) => image.filename)).toEqual([
+    "jd038_1.png", ...Array.from({ length: 15 }, (_, index) => `jd038_${index + 2}.jpg`),
+  ]);
+  for (let index = 13; index <= 16; index++) {
+    expect(images.find((image) => image.filename === `jd038_${index}.jpg`)).toMatchObject({
+      src: `/images/portfolio/optimized/jd038/jd038_${index}.webp`, width: 2048,
+    });
+  }
+});
+
 test("detail images preserve numeric ordering and exclude thumbnails for all nine new folders", () => {
   for (let index = 37; index <= 45; index++) {
     const id = `jd${String(index).padStart(3, "0")}`;
