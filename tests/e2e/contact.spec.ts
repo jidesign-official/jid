@@ -48,7 +48,7 @@ test("contact submits all fields by native POST with CAPTCHA enabled", async ({ 
     _template: "table",
     _captcha: "true",
     _honey: "",
-    _next: "https://jidesign-official.github.io/jid/contact/thanks/",
+    _next: "https://jid.kr/contact/thanks/",
     name: "테스트 담당자",
     email: "test@example.com", // FormSubmit uses the email field as Reply-To.
     company: "Test Studio",

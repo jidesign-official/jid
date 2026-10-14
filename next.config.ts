@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
-const isGithubActions = process.env.GITHUB_ACTIONS === "true";
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? (isGithubActions ? "/jdesign" : "");
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {
   output: "export",

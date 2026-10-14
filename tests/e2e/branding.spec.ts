@@ -74,8 +74,8 @@ test("brand source text preserves deployment identifiers", () => {
   expect(readme).toContain("# JiD - Portfolio Web Application");
   expect(readme).not.toMatch(oldDisplayBrand);
   expect(readme).toContain("https://github.com/jidesign-official/jid.git");
-  expect(readme).toContain("https://jidesign-official.github.io/jid/");
+  expect(readme).toContain("https://jid.kr/");
   expect(source("src/app/layout.tsx")).toContain('/favicon.ico?v=jid');
-  expect(source("src/components/contact/ContactForm.tsx")).toContain("https://jidesign-official.github.io/jid/contact/thanks/");
+  expect(source("src/components/contact/ContactForm.tsx")).toContain("https://jid.kr/contact/thanks/");
   expect(source("src/app/portfolio/[id]/page.tsx")).toContain('title: "Project Not Found - JiD"');
 });

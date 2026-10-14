@@ -88,7 +88,7 @@ export default async function PortfolioDetailPage({
         </div>
 
         {/* Main Product Thumbnail Display */}
-        <div className="w-full max-w-[768px] mx-auto aspect-square rounded-[5px] overflow-hidden flex items-center justify-center bg-[#ffffff]">
+        <div className="w-full max-w-[1024px] mx-auto aspect-square rounded-[5px] overflow-hidden flex items-center justify-center bg-[#ffffff]">
           <img
             src={getAssetPath(project.image)}
             alt={project.title}

@@ -48,7 +48,7 @@ export default function PromoGrid({ projects }: { projects: FeaturedProject[] })
             href={`/portfolio/${project.id}/`}
             aria-label={`${project.title} 3D 모델 보기`}
             ref={(element) => { cardsRef.current[index] = element; }}
-            className="group relative h-[500px] md:h-[580px] overflow-hidden rounded-[5px] bg-[#F5F5F7] dark:bg-[#1C1C1E] flex flex-col items-center pt-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066CC]"
+            className="group relative h-[500px] md:h-[580px] overflow-hidden rounded-[5px] bg-[#F5F5F7] dark:bg-[#1C1C1E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066CC]"
           >
             <div className="absolute inset-0">
               <Image
@@ -58,15 +58,6 @@ export default function PromoGrid({ projects }: { projects: FeaturedProject[] })
                 sizes="(min-width: 1440px) 696px, (min-width: 768px) calc((100vw - 48px) / 2), calc(100vw - 32px)"
                 className="object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
               />
-            </div>
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-[160px] bg-linear-to-b from-[#F5F5F7]/95 via-[#F5F5F7]/75 to-transparent dark:from-[#1C1C1E]/95 dark:via-[#1C1C1E]/75"
-            />
-            <div className="relative z-10 flex flex-col items-center text-center px-6">
-              <h2 className="text-[28px] md:text-[36px] font-semibold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">
-                {project.title}
-              </h2>
             </div>
           </Link>
         ))}

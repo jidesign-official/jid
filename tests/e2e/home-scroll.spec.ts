@@ -10,7 +10,7 @@ test("hero stays separate from product cards throughout normal and reverse scrol
     await page.evaluate((y) => window.scrollTo(0, y), height * fraction);
     await expect.poll(async () => page.evaluate(() => {
       const hero = document.querySelector("main section")!;
-      const cards = [...document.querySelectorAll("main section")].find((section) => section.querySelector("h2"))!;
+      const cards = document.querySelector('section[aria-label="3D 모델이 있는 대표 프로젝트"]')!;
       return cards.getBoundingClientRect().top - hero.getBoundingClientRect().bottom;
     }), { timeout: 3000 }).toBeGreaterThanOrEqual(-1);
   }

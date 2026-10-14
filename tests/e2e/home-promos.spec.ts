@@ -6,11 +6,11 @@ const featuredIds = ["jd003", "jd005_a", "jd026", "jd030"];
 
 test("home cards show four real portfolio projects with working images", async ({ page }) => {
   await page.goto(`${basePath}/`);
-  const cards = page.locator("section").filter({ has: page.locator("h2") });
-  await expect(cards.locator("h2")).toHaveCount(4);
+  const cards = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true });
+  await expect(cards.getByRole("link")).toHaveCount(4);
+  await expect(cards.locator("h2")).toHaveCount(0);
   for (const id of featuredIds) {
     const project = portfolioData.find((item) => item.id === id)!;
-    await expect(cards.getByRole("heading", { name: project.title, exact: true })).toBeAttached();
     const link = cards.getByRole("link", { name: new RegExp(project.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
     await expect(link).toHaveAttribute("href", `${basePath}/portfolio/${id}/`);
     await expect(link).not.toContainText("3D 모델 보기");
@@ -26,7 +26,7 @@ test("home cards show four real portfolio projects with working images", async (
 
 for (const width of [320, 390, 1440]) {
   for (const theme of ["light", "dark"] as const) {
-    test(`featured thumbnails fill every card at ${width}px in ${theme} mode while keeping titles and accessible links`, async ({ page }, testInfo) => {
+    test(`featured thumbnails fill every card at ${width}px in ${theme} mode with images only and accessible links`, async ({ page }, testInfo) => {
       const errors: string[] = [];
       const models: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));
@@ -56,12 +56,8 @@ for (const width of [320, 390, 1440]) {
           expect(imageBox![field], `${id} image ${field} equals full card ${field}`).toBeCloseTo(cardBox![field], 0);
         }
         expect(cardBox!.height).toBe(width >= 768 ? 580 : 500);
-        const heading = card.getByRole("heading", { level: 2, name: project.title, exact: true });
-        await expect(heading).toBeVisible();
-        const box = (await heading.boundingBox())!;
-        expect(box.x).toBeGreaterThanOrEqual(cardBox!.x);
-        expect(box.x + box.width).toBeLessThanOrEqual(cardBox!.x + cardBox!.width);
-        await expect(card.locator("p, span")).toHaveCount(0);
+        await expect(card.locator('h2, p, span, [aria-hidden="true"]')).toHaveCount(0);
+        expect((await card.textContent())?.trim()).toBe("");
         await expect(card).toHaveAttribute("href", `${basePath}/portfolio/${id}/`);
         await card.focus();
         // A mouse-clicked theme toggle leaves pointer modality active. Exercise
