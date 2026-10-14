@@ -15,7 +15,7 @@ Apple 감성의 미니멀하고 직관적인 인터랙션을 제공하는 **JiD*
 - **Server / Hosting**: Github
 - **Form Service**: FormSubmit
 ---
-## 🔗 접속주소 : https://kkomjirak.github.io/jdesign/
+## 🔗 접속주소 : https://jidesign-official.github.io/jid/
 
 ## 버전 보존 및 롤백
 
@@ -43,7 +43,7 @@ NEXT_PUBLIC_BASE_PATH=/jdesign npm run build
 **새 복제본에서 실행**하세요. 기존 작업 폴더의 미커밋 파일이나 업로드한 자산을 덮어쓰지 않고, 과거 이력을 삭제하지 않는 새 롤백 커밋을 만듭니다.
 
 ```bash
-git clone https://github.com/kkomjirak/jdesign.git jdesign-rollback
+git clone https://github.com/jidesign-official/jid.git jdesign-rollback
 cd jdesign-rollback
 git fetch origin --tags
 git switch -c rollback/pre-video origin/main
