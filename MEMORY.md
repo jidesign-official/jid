@@ -13,6 +13,12 @@
 - Convert images to RGBA before writing PNG-compressed ICO frames with Pillow. RGB ICO frames fail in Next.js 16.3/Turbopack with `The PNG is not in RGBA format!`.
 - Build with `NEXT_PUBLIC_BASE_PATH=/jid` and verify exported icon links and served bytes. `tests/e2e/favicon.spec.ts` checks homepage, About, and Contact icon metadata and asset responses.
 
+## Home featured cards
+- Render the four original thumbnails edge-to-edge with `absolute inset-0` and `object-cover`; remove visible `Product Design`/category and bottom `3D 모델 보기 ↗` nodes. Preserve titles, detail destinations, accessible 3D link names, existing 500px mobile/580px desktop heights, hover/reduced-motion behavior and keyboard outlines. A pointer-transparent light/dark top gradient protects title contrast without shrinking the image area.
+- `cover` maintains aspect ratio but can crop edges. Keep source images unchanged and do not describe this presentation as uncropped.
+- Regression tests compare every image's exact bounds with its card at 320/390/1440px in light/dark modes; verify original-image decode, title/link retention, removed nodes, keyboard focus, overflow/errors, absence of homepage GLB requests, and real detail navigation. Enter dark mode through the actual toggle; storage initialization alone does not apply its current root class. After pointer interaction, exercise Tab/Shift+Tab before asserting `:focus-visible`.
+- Verification: build/type/lint passed (0 errors, 11 existing warnings); focused cards 24/24 and home/hero/routing regressions 105/105 passed. Run full UI and verify the deployed exact SHA separately before claiming publication.
+
 ## Brand and footer
 - Use exactly `JiD` for displayed studio names, metadata, image alt text, inquiry subjects and placeholder examples. Preserve technical identifiers: current deployment basePath `/jid`, `mail@jid.kr`, icon cache query `v=jid`, asset paths and business/project titles. The canonical GitHub repository is `jidesign-official/jid`; historical `/jdesign` paths belong to the previous repository deployment.
 - Footer copyright is a centered full-width paragraph. Footer Behance/Dribbble/LinkedIn/Instagram links are removed; quick navigation and Back to top remain. This does not remove the separate header Instagram link.

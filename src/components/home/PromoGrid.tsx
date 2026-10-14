@@ -50,26 +50,24 @@ export default function PromoGrid({ projects }: { projects: FeaturedProject[] })
             ref={(element) => { cardsRef.current[index] = element; }}
             className="group relative h-[500px] md:h-[580px] overflow-hidden rounded-[5px] bg-[#F5F5F7] dark:bg-[#1C1C1E] flex flex-col items-center pt-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066CC]"
           >
-            <div className="relative z-10 flex flex-col items-center text-center px-6">
-              <h2 className="text-[28px] md:text-[36px] font-semibold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">
-                {project.title}
-              </h2>
-              <p className="text-sm md:text-lg mt-2 text-[#1D1D1F]/70 dark:text-[#F5F5F7]/70">
-                {project.category} Design
-              </p>
-            </div>
-            <div className="absolute top-[150px] bottom-[72px] left-4 right-4 md:left-6 md:right-6">
+            <div className="absolute inset-0">
               <Image
                 src={getAssetPath(project.image)}
                 alt={project.title}
                 fill
-                sizes="(min-width: 1440px) 660px, (min-width: 768px) 50vw, 100vw"
-                className="object-contain transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
+                sizes="(min-width: 1440px) 696px, (min-width: 768px) calc((100vw - 48px) / 2), calc(100vw - 32px)"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
               />
             </div>
-            <span className="absolute bottom-6 text-sm font-medium text-[#0066CC] dark:text-[#66B2FF]">
-              3D 모델 보기 <span aria-hidden="true">↗</span>
-            </span>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-[160px] bg-linear-to-b from-[#F5F5F7]/95 via-[#F5F5F7]/75 to-transparent dark:from-[#1C1C1E]/95 dark:via-[#1C1C1E]/75"
+            />
+            <div className="relative z-10 flex flex-col items-center text-center px-6">
+              <h2 className="text-[28px] md:text-[36px] font-semibold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">
+                {project.title}
+              </h2>
+            </div>
           </Link>
         ))}
       </div>
