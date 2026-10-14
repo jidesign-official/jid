@@ -1,13 +1,20 @@
 # Project conventions
 
+## GitHub connection
+- Canonical repository: `https://github.com/jidesign-official/jid` (repository ID `1345699475`); local origin fetch/push URL: `https://github.com/jidesign-official/jid.git`.
+- GitHub CLI active account is `jidesign-official`, with verified repository admin/push permissions. Git uses the GitHub CLI credential helper. The previous account remains stored but inactive.
+- Ownership/name migration preserved all remote branch/tag refs and local HEAD/uncommitted work. The checkout path remains `/mnt/hermes/workspace/jdesign`; application/package names are unchanged. Pages now builds with `/jid` from `actions/configure-pages` output; local export verification uses `NEXT_PUBLIC_BASE_PATH=/jid`. The migrated live site is `https://jidesign-official.github.io/jid/`.
+- The user authorized publishing all remaining project files, including source DOCX/workbook/logo/original GLB/video assets. Preserve their exact bytes. Only `public/images/home/intro_all.mp4` is excluded from normal Git because it exceeds 100MiB; preserve it in release `source-assets-20261014`, with download/hash instructions in README. The runtime hero remains `intro.webm`. Earlier local-only source-file notes describe the previous publication scope.
+- Commit author identity remains `kkomjirak <sonstick@gmail.com>`; authentication and authorship are independent. Obtain the intended verified author email before changing repository-local identity; do not rewrite existing commits.
+
 ## Icons
 - Store icons in the App Router convention paths, but declare all three in `layout.tsx` metadata with base-path-safe URLs. In Next.js 16.3, setting only `icons.shortcut` suppresses automatic PNG/Apple metadata; the production export also omits the automatic ICO link when PNG icons are present. Explicit `shortcut`, `icon`, and `apple` declarations keep all three linked. The ICO URL uses `?v=jid` to refresh the previous icon cache.
 - Icons use the supplied circular dark-gray jiD logo. Keep its proportions and original colors. The supplied raster was 101 × 101 px; prefer a higher-resolution original for future larger icons.
 - Convert images to RGBA before writing PNG-compressed ICO frames with Pillow. RGB ICO frames fail in Next.js 16.3/Turbopack with `The PNG is not in RGBA format!`.
-- Build with `NEXT_PUBLIC_BASE_PATH=/jdesign` and verify exported icon links and served bytes. `tests/e2e/favicon.spec.ts` checks homepage, About, and Contact icon metadata and asset responses.
+- Build with `NEXT_PUBLIC_BASE_PATH=/jid` and verify exported icon links and served bytes. `tests/e2e/favicon.spec.ts` checks homepage, About, and Contact icon metadata and asset responses.
 
 ## Brand and footer
-- Use exactly `JiD` for displayed studio names, metadata, image alt text, inquiry subjects and placeholder examples. Preserve technical identifiers: repository/basePath `/jdesign`, `mail@jid.kr`, icon cache query `v=jid`, asset paths and business/project titles.
+- Use exactly `JiD` for displayed studio names, metadata, image alt text, inquiry subjects and placeholder examples. Preserve technical identifiers: current deployment basePath `/jid`, `mail@jid.kr`, icon cache query `v=jid`, asset paths and business/project titles. The canonical GitHub repository is `jidesign-official/jid`; historical `/jdesign` paths belong to the previous repository deployment.
 - Footer copyright is a centered full-width paragraph. Footer Behance/Dribbble/LinkedIn/Instagram links are removed; quick navigation and Back to top remain. This does not remove the separate header Instagram link.
 - Footer keeps the supplied light/dark logo images but removes the redundant JiD text span beside them. The logo link is named `JiD 홈`; slogan is exactly `From Imagination to Intuition`. Preserve the copyright and navigation.
 
@@ -41,7 +48,7 @@
 - Multi-viewer GPU probes must target the exact canvas; otherwise a sibling's draw can satisfy another model's pixel assertion. Independently enumerate all38 cases and verify requested filename/bytes, nonblank pixels, colors and clipping per instance.
 - Lazy-load on viewport intersection; pause drawing offscreen/hidden, preserve the loaded scene, guard late callbacks, and dispose OrbitControls, shared GPU resources, and decoded image bitmaps on unmount.
 - `npm run test:models` runs desktop and touch-enabled mobile Chromium serially with SwiftShader. Real draw calls, alpha/color framebuffer samples, edge checks, screenshots, loading/fallback controls, delayed navigation cleanup, and touch drag/pinch provide proof beyond asset HTTP status.
-- `npm run test:e2e` is the separate general UI suite. Pass `E2E_BASE_URL` and `NEXT_PUBLIC_BASE_PATH=/jdesign` to validate a static export or deployed site. Use independent output directories if suites run concurrently; Playwright cleans its output directory, including child directories.
+- `npm run test:e2e` is the separate general UI suite. Pass `E2E_BASE_URL` and `NEXT_PUBLIC_BASE_PATH=/jid` to validate a static export or deployed site. Use independent output directories if suites run concurrently; Playwright cleans its output directory, including child directories.
 - In cross-browser tests, scroll lazy media/the full viewer into view rather than only its heading. Confirm React is interactive through a real reversible state transition before filling SSR-controlled fields; network silence alone is not a hydration guarantee.
 - Native video decode and an SSR play label do not prove media-error listeners have mounted. The simulated error-layout test must play, observe the pause label, pause, and observe the play label before dispatching an error. A live WebKit probe reproduced missing status with decode-only readiness, but the interactive sequence correctly displayed the fallback without page errors. Final reruns: staticUI186/186 and live hero60/60; media/component code unchanged by this test hardening.
 

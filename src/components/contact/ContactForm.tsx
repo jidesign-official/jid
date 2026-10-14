@@ -59,7 +59,7 @@ export default function ContactForm() {
         <input type="hidden" name="_subject" value="[JiD 문의] 프로젝트 문의" />
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="true" />
-        <input type="hidden" name="_next" value="https://kkomjirak.github.io/jdesign/contact/thanks/" />
+        <input type="hidden" name="_next" value="https://jidesign-official.github.io/jid/contact/thanks/" />
         <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
         <input type="hidden" name="selectedTypes" value={formData.selectedTypes.join(", ")} />
         <input type="hidden" name="selectedBudget" value={formData.selectedBudget} />

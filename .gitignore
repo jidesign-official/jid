@@ -46,3 +46,7 @@ next-env.d.ts
 # workspace temp copies
 /agy/
 /codex/
+
+# Oversized source video is preserved in GitHub Release source-assets-20261014.
+# The site continues to serve the tracked intro.webm display asset.
+/public/images/home/intro_all.mp4

@@ -17,6 +17,19 @@ Apple 감성의 미니멀하고 직관적인 인터랙션을 제공하는 **JiD*
 ---
 ## 🔗 접속주소 : https://jidesign-official.github.io/jid/
 
+현재 GitHub Pages 배포 경로는 `/jid`입니다. GitHub Actions는 Pages 설정에서 이 경로를 읽어 빌드합니다. 로컬에서 배포용 정적 파일을 만들 때는 `NEXT_PUBLIC_BASE_PATH=/jid npm run build`를 사용하세요.
+
+### 대용량 원본 영상 보관
+
+`public/images/home/intro_all.mp4`는 GitHub 일반 파일의 100MiB 제한을 초과하여 Git 이력 대신 [원본 자산 Release](https://github.com/jidesign-official/jid/releases/tag/source-assets-20261014)에 원본 그대로 보관합니다. 실제 사이트의 히어로 영상은 저장소에 포함된 `public/images/home/intro.webm`을 사용합니다.
+
+```bash
+gh release download source-assets-20261014 --repo jidesign-official/jid \
+  --pattern intro_all.mp4 --dir public/images/home
+```
+
+원본 `intro_all.mp4`의 SHA-256: `f81c879125628bc378eadeedb26add5b4daa4e1e1b291160581a2bba447ed705`.
+
 ## 버전 보존 및 롤백
 
 영상 히어로와 웹용 GLB 전환 직전의 배포 버전은 아래 태그로 보존되어 있습니다.
@@ -35,7 +48,7 @@ git fetch origin --tags
 git worktree add ../jdesign-pre-video snapshot/pre-video-hero-20261003
 cd ../jdesign-pre-video
 npm ci
-NEXT_PUBLIC_BASE_PATH=/jdesign npm run build
+NEXT_PUBLIC_BASE_PATH=/jid npm run build
 ```
 
 ### 사이트 전체를 이전 버전으로 되돌리기
@@ -53,7 +66,7 @@ git restore --source=snapshot/pre-video-hero-20261003 --staged --worktree -- .
 git restore --source=HEAD --staged --worktree -- README.md
 git diff --cached --stat
 npm ci
-NEXT_PUBLIC_BASE_PATH=/jdesign npm run build
+NEXT_PUBLIC_BASE_PATH=/jid npm run build
 git commit -m "revert: restore pre-video snapshot"
 git push origin HEAD:main
 ```
