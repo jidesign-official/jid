@@ -11,6 +11,7 @@ import { modelProjects } from "./helpers/model-cases";
 import { getProjectDetailImages } from "../../src/lib/portfolioImages";
 import { sortPortfolioProjects } from "../../src/lib/portfolioOrdering";
 import { pickPortfolioTagline } from "../../src/lib/portfolioTaglines";
+import expectedTitles from "./fixtures/portfolio-titles.json";
 
 // Execute the real server-page selection without importing client-only CSS/GSAP.
 // Client children are not rendered: their props expose the selected projects.
@@ -121,13 +122,13 @@ test("model routing returns no assets for a missing web asset without a legacy f
 
 test("home featured projects resolve web assets even without legacy GLBs", () => {
   withAssetAvailability((assetPath) => assetPath.includes(`${path.sep}images${path.sep}glb${path.sep}`), () => {
-    expect(homeProjectIds()).toEqual(["jd003", "jd005_a", "jd026", "jd030"]);
+    expect(homeProjectIds()).toEqual(["jd025_c", "jd008_b", "jd005_b", "jd013"]);
   });
 });
 
 test("home featured projects omit a missing web asset despite existing legacy GLBs", () => {
-  withAssetAvailability((assetPath) => !assetPath.endsWith("jd026_web.glb"), () => {
-    expect(homeProjectIds()).toEqual(["jd003", "jd005_a", "jd030"]);
+  withAssetAvailability((assetPath) => !assetPath.endsWith("jd005_b_web.glb"), () => {
+    expect(homeProjectIds()).toEqual(["jd025_c", "jd008_b", "jd013"]);
   });
 });
 
@@ -161,11 +162,11 @@ test("model routing filters each missing multi-model asset while retaining order
 
 test("detail pages render every ordered model with stable URL keys and unique multi-model titles", async () => {
   for (const { id, files } of modelProjects) {
-    const project = portfolioData.find((item) => item.id === id)!;
+    const title = expectedTitles[id as keyof typeof expectedTitles];
     expect(await detailViewers(id), id).toEqual(files.map((file, index) => ({
       modelUrl: `/images/glb/${file}`,
       key: `/images/glb/${file}`,
-      projectTitle: files.length > 1 ? `${project.title} — 모델 ${index + 1}` : project.title,
+      projectTitle: files.length > 1 ? `${title} — 모델 ${index + 1}` : title,
     })));
   }
   expect(await detailViewers("jd002")).toEqual([]);
@@ -176,7 +177,7 @@ test("both existing jd004 records use the exact wireless-stethoscope title witho
     expect(portfolioData.find((project) => project.id === id)).toEqual({
       id,
       folder: id,
-      title: "UNC-무선청진기",
+      title: "Wireless Stethoscope_UNC",
       category: "Product",
       image: `/images/portfolio/${id}/${id}_thumbs.png`,
     });

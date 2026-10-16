@@ -4,15 +4,15 @@ import { modelProjects } from "./helpers/model-cases";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const additions = [
-  ["jd037", "ACTILINK TRIO"],
-  ["jd038", "STER SUTTLE"],
-  ["jd039", "STERLINK Lite Plus"],
-  ["jd040", "STERLINK Mini"],
-  ["jd041", "STERLINK Pro"],
-  ["jd042", "STERLINK Ultra"],
-  ["jd043", "Wonder Ray Mint Ren"],
-  ["jd044", "Z-80R"],
-  ["jd045", "에어링크"],
+  ["jd037", "ACTILINK TRIO_PLASMAPP"],
+  ["jd038", "STER SUTTLE_PLASMAPP"],
+  ["jd039", "STERLINK Lite Plus_PLASMAPP"],
+  ["jd040", "STERLINK Mini_PLASMAPP"],
+  ["jd041", "STERLINK Pro_PLASMAPP"],
+  ["jd042", "STERLINK Ultra_PLASMAPP"],
+  ["jd043", "Wonder Ray_LICHTZEN"],
+  ["jd044", "3D Printer_Ray"],
+  ["jd045", "Air Sterilizer_PLASMAPP"],
 ];
 
 test("registers the nine supplied projects with the exact workbook titles without losing existing entries", () => {

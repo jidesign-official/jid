@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-const title = "UNC-무선청진기";
+const title = "Wireless Stethoscope_UNC";
 const projectIds = ["jd004_a", "jd004_b"];
 
 for (const id of projectIds) {

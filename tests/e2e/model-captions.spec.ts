@@ -1,12 +1,13 @@
 import { test, expect } from "@playwright/test";
 import { modelProjects } from "./helpers/model-cases";
+import expectedTitles from "./fixtures/portfolio-titles.json";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 for (const { id, files } of modelProjects) {
   test(`${id}: all 3D viewers omit format captions and have unique accessible names and controls`, async ({ page }) => {
     await page.goto(`${basePath}/portfolio/${id}/`);
-    const title = (await page.getByRole("heading", { level: 1 }).innerText()).trim();
+    const title = expectedTitles[id as keyof typeof expectedTitles];
     const viewers = page.getByRole("region", { name: /.+ 3D 모델$/ });
     await expect(viewers).toHaveCount(files.length);
     for (let index = 0; index < files.length; index++) {

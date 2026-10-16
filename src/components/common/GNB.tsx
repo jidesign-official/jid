@@ -96,7 +96,7 @@ export default function GNB() {
           <div className="flex items-center gap-1.5 md:gap-2 z-50 relative">
             {/* Instagram Link Button */}
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/jidesign.official"
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"

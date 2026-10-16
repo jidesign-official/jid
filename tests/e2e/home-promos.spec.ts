@@ -2,12 +2,15 @@ import { test, expect } from "@playwright/test";
 import portfolioData from "../../public/images/portfolio/portfolio_data.json";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-const featuredIds = ["jd003", "jd005_a", "jd026", "jd030"];
+const featuredIds = ["jd025_c", "jd008_b", "jd005_b", "jd013"];
 
 test("home cards show four real portfolio projects with working images", async ({ page }) => {
   await page.goto(`${basePath}/`);
   const cards = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true });
   await expect(cards.getByRole("link")).toHaveCount(4);
+  expect(await cards.getByRole("link").evaluateAll((links) => links.map((link) => link.getAttribute("href")))).toEqual(
+    featuredIds.map((id) => `${basePath}/portfolio/${id}/`),
+  );
   await expect(cards.locator("h2")).toHaveCount(0);
   for (const id of featuredIds) {
     const project = portfolioData.find((item) => item.id === id)!;
@@ -79,9 +82,9 @@ for (const width of [320, 390, 1440]) {
 test("a full-image featured card still navigates to its unchanged project detail", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`${basePath}/`);
-  const project = portfolioData.find((item) => item.id === "jd003")!;
+  const project = portfolioData.find((item) => item.id === "jd025_c")!;
   const card = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true }).getByRole("link", { name: `${project.title} 3D 모델 보기`, exact: true });
   await card.click();
-  await expect(page).toHaveURL(new RegExp(`${basePath}/portfolio/jd003/?$`));
+  await expect(page).toHaveURL(new RegExp(`${basePath}/portfolio/jd025_c/?$`));
   await expect(page.getByRole("heading", { level: 1, name: project.title, exact: true })).toBeVisible();
 });

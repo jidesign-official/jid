@@ -4,7 +4,7 @@ import { resolve, dirname, posix } from "node:path";
 import ts from "typescript";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-const title = "STER SUTTLE";
+const title = "STER SUTTLE_PLASMAPP";
 const regionName = `${title} 연속 이미지`;
 const filenames = Array.from({ length: 11 }, (_, index) => `jd038_${index + 2}.jpg`);
 const frames = filenames.map((filename) => ({
@@ -117,12 +117,12 @@ test("jd038 export keeps one eleven-frame sequence after five ordinary images an
   const player = await sequence(page);
   await expect(page.locator("h1")).toHaveText(title);
   await expect(page.getByText("총 16개의 상세 디자인 시안이 등록되어 있습니다.", { exact: false })).toBeVisible();
-  const images = page.locator('img[alt="STER SUTTLE 상세 이미지"]');
+  const images = page.locator('img[alt="STER SUTTLE_PLASMAPP 상세 이미지"]');
   const sources = [1, 13, 14, 15, 16].map((index) => `${basePath}/images/portfolio/optimized/jd038/jd038_${index}.webp`);
   await expect(images).toHaveCount(5);
   expect(await images.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("src")))).toEqual(sources);
   expect(await player.evaluate((el) => {
-    const images = document.querySelectorAll('img[alt="STER SUTTLE 상세 이미지"]');
+    const images = document.querySelectorAll('img[alt="STER SUTTLE_PLASMAPP 상세 이미지"]');
     return Boolean(images[images.length - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
   })).toBe(true);
   for (let index = 1; index < sources.length; index++) {
@@ -130,7 +130,7 @@ test("jd038 export keeps one eleven-frame sequence after five ordinary images an
     await expect.poll(() => images.nth(index).evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 2048 && image.naturalHeight > 0)).toBe(true);
   }
   await images.first().click();
-  const expanded = page.locator('img[alt="STER SUTTLE 상세 확대 시안"]');
+  const expanded = page.locator('img[alt="STER SUTTLE_PLASMAPP 상세 확대 시안"]');
   await expect(page.getByRole("button", { name: "닫기", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "다음 이미지", exact: true })).toHaveCount(1);
   for (const src of [...sources, sources[0]]) {
@@ -189,9 +189,9 @@ test("harness optional sequence prop leaves other galleries and lightboxes uncha
   const errors = await harness(page, { sequenceFrames: undefined });
   await expect(page.getByRole("region", { name: regionName, exact: true })).toHaveCount(0);
   await expect(page.getByText("총 1개의 상세 디자인 시안이 등록되어 있습니다.", { exact: false })).toBeVisible();
-  await page.locator('img[alt="STER SUTTLE 상세 이미지"]').click();
+  await page.locator('img[alt="STER SUTTLE_PLASMAPP 상세 이미지"]').click();
   await expect(page.getByRole("button", { name: "닫기", exact: true })).toBeVisible();
-  await expect(page.locator('img[alt="STER SUTTLE 상세 확대 시안"]')).toHaveAttribute("src", `${basePath}${ordinary[0].src}`);
+  await expect(page.locator('img[alt="STER SUTTLE_PLASMAPP 상세 확대 시안"]')).toHaveAttribute("src", `${basePath}${ordinary[0].src}`);
   expect(errors).toEqual([]);
 });
 
@@ -200,7 +200,7 @@ test("harness renders one sequence region and keeps ordinary gallery count", asy
   const player = await sequence(page);
   await expect(player.getByRole("img")).toHaveCount(1);
   await expect(page.getByText("총 12개의 상세 디자인 시안이 등록되어 있습니다.", { exact: false })).toBeVisible();
-  await expect(page.locator('img[alt="STER SUTTLE 상세 이미지"]')).toHaveCount(1);
+  await expect(page.locator('img[alt="STER SUTTLE_PLASMAPP 상세 이미지"]')).toHaveCount(1);
   expect(errors).toEqual([]);
 });
 

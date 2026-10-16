@@ -12,7 +12,7 @@ const routes = [
   { name: "contact", path: "/contact/", title: "JiD - Portfolio", description: defaultDescription },
   { name: "contact thanks", path: "/contact/thanks/", title: "문의 전송 후 안내 | JiD", description: defaultDescription },
   { name: "portfolio", path: "/portfolio/", title: "Portfolio - JiD", description: "JiD의 혁신적인 프로젝트 포트폴리오입니다." },
-  { name: "jd001", path: "/portfolio/jd001/", title: "현진기업 휴대용 정수기 - JiD", description: "현진기업 휴대용 정수기 제품 디자인 포트폴리오 상세 페이지입니다." },
+  { name: "jd001", path: "/portfolio/jd001/", title: "Portable Water Purifier_Hyunjin - JiD", description: "Portable Water Purifier_Hyunjin 제품 디자인 포트폴리오 상세 페이지입니다." },
 ];
 
 // Branding checks must not submit a form or contact an external provider.
@@ -49,7 +49,7 @@ test.describe("route branding", () => {
         await expect.soft(page.locator("main")).not.toContainText(oldDisplayBrand);
       }
       if (route.name === "jd001") {
-        await expect.soft(page.getByRole("heading", { level: 1 })).toHaveText("현진기업 휴대용 정수기");
+        await expect.soft(page.getByRole("heading", { level: 1 })).toHaveText("Portable Water Purifier_Hyunjin");
         await expect.soft(page.locator("main h1 + p")).toHaveText(/^(?:Design that bridges imagination and intuition|Between a question mark and an exclamation mark|Design Beyond Form)$/);
         await expect.soft(page.locator("main")).not.toContainText("JiD의 디테일과 심미성이 담긴 산업/의료/제품 디자인 포트폴리오입니다.");
       }
