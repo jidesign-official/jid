@@ -1,0 +1,143 @@
+.body {
+  margin-top: 3rem;
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+.body > * {
+  margin: 0 0 1.5rem;
+}
+.heading {
+  font-weight: 500;
+  line-height: 1.35;
+}
+h2.heading {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+h3.heading {
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+}
+.paragraph {
+  white-space: pre-wrap;
+  line-height: 1.8;
+}
+.divider {
+  border: 0;
+  border-top: 1px solid currentColor;
+  opacity: 0.2;
+}
+.small {
+  height: 1rem;
+}
+.medium {
+  height: 3rem;
+}
+.large {
+  height: 6rem;
+}
+.images {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (min-width: 768px) {
+  .images[data-columns="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .images[data-columns="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .images[data-columns="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.figure {
+  min-width: 0;
+  margin: 0;
+}
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.caption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.enlarge {
+  display: block;
+  width: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+.enlarge:focus-visible,
+.dialog button:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 4px;
+}
+.dialog {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 16px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+}
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+.dialog[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox {
+  width: min(100%, 1200px);
+  max-height: 100%;
+  overflow-y: auto;
+}
+.expandedFigure {
+  margin: 0;
+  text-align: center;
+}
+.expandedImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 180px);
+  object-fit: contain;
+}
+.dialog button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid #ffffff80;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+.close {
+  display: block;
+  margin: 0 0 12px auto;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import GNB from "@/components/common/GNB";
-import Footer from "@/components/common/Footer";
+import SiteChrome from "@/components/common/SiteChrome";
 import { getAssetPath } from "@/lib/basePath";
 
 export const metadata: Metadata = {
@@ -18,11 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col pt-[44px]">
-        <GNB />
+        <SiteChrome slot="header" />
         <main className="flex-1">
           {children}
         </main>
-        <Footer />
+        <SiteChrome slot="footer" />
       </body>
     </html>
   );

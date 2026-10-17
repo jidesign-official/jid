@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { getAdminProject } from "./adminProjects";
 
 // Explicitly opt projects into the supplied web-ready assets, in display order.
 // Never fall back to legacy portfolio GLBs: those originals may be edited independently.
@@ -40,13 +41,24 @@ const projectModelFiles: Readonly<Record<string, readonly string[]>> = {
   jd041: ["jd041-001_web.glb", "jd041-002_web.glb"],
 };
 
-export function getProjectModelPaths(folderName: string): string[] {
+export function getProjectModelPaths(folderName: string, root = process.cwd()): string[] {
+  const adminProject = getAdminProject(folderName, root);
+  if (adminProject) {
+    // A CMS entry never probes or falls back to legacy assets.
+    return adminProject.models.filter((url) => {
+      try { return fs.statSync(path.join(root, "public", url)).isFile(); }
+      catch (error) {
+        if (["ENOENT", "ENOTDIR"].includes((error as NodeJS.ErrnoException).code ?? "")) return false;
+        throw error;
+      }
+    });
+  }
   if (!Object.hasOwn(projectModelFiles, folderName)) return [];
   return projectModelFiles[folderName]
-    .filter((modelFile) => fs.existsSync(path.join(process.cwd(), "public", "images", "glb", modelFile)))
+    .filter((modelFile) => fs.existsSync(path.join(root, "public", "images", "glb", modelFile)))
     .map((modelFile) => `/images/glb/${modelFile}`);
 }
 
-export function getProjectModelPath(folderName: string): string | null {
-  return getProjectModelPaths(folderName)[0] ?? null;
+export function getProjectModelPath(folderName: string, root = process.cwd()): string | null {
+  return getProjectModelPaths(folderName, root)[0] ?? null;
 }

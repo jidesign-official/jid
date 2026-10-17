@@ -34,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate administrator import pipeline
+        run: |
+          npm run test:admin-importer
+          npm run test:admin-pipeline
+
       - name: Build with Next.js
         run: npm run build
         env:

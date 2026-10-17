@@ -19,6 +19,12 @@
 # next.js
 /.next/
 /out/
+/.generated/
+/public/_admin_media/
+
+# Python validation cache
+__pycache__/
+*.py[cod]
 
 # production
 /build

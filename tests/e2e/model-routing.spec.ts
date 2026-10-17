@@ -12,6 +12,8 @@ import { getProjectDetailImages } from "../../src/lib/portfolioImages";
 import { sortPortfolioProjects } from "../../src/lib/portfolioOrdering";
 import { pickPortfolioTagline } from "../../src/lib/portfolioTaglines";
 import expectedTitles from "./fixtures/portfolio-titles.json";
+import { getPortfolioCatalog } from "../../src/lib/portfolioCatalog";
+import { getAdminProject } from "../../src/lib/adminProjects";
 
 // Execute the real server-page selection without importing client-only CSS/GSAP.
 // Client children are not rendered: their props expose the selected projects.
@@ -30,6 +32,7 @@ function homeProjectIds(): string[] {
       if (id === "node:path") return path;
       if (id === "@/lib/portfolioModels") return { getProjectModelPath };
       if (id.endsWith("portfolio_data.json")) return portfolioData;
+      if (id === "@/lib/portfolioCatalog") return { getPortfolioCatalog };
       if (id === "@/components/home/Hero" || id === "@/components/home/PromoGrid") return () => null;
       throw new Error(`Unexpected home-page dependency: ${id}`);
     },
@@ -67,8 +70,10 @@ async function detailViewers(id: string) {
       if (dependency === "@/lib/portfolioTaglines") return { pickPortfolioTagline };
       if (dependency === "@/lib/basePath") return { getAssetPath: (assetPath: string) => assetPath };
       if (dependency.endsWith("portfolio_data.json")) return portfolioData;
+      if (dependency === "@/lib/portfolioCatalog") return { getPortfolioCatalog };
+      if (dependency === "@/lib/adminProjects") return { getAdminProject };
       if (dependency === "@/components/portfolio/Model3DViewer") return ModelViewer;
-      if (dependency === "next/link" || dependency === "@/components/portfolio/DetailGalleryView") return () => null;
+      if (dependency === "next/link" || dependency === "@/components/portfolio/DetailGalleryView" || dependency === "@/components/portfolio/PortfolioBody") return () => null;
       if (dependency === "next/navigation") return { notFound: () => { throw new Error("Project not found"); } };
       throw new Error(`Unexpected detail-page dependency: ${dependency}`);
     },

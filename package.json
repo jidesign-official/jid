@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "python3 scripts/import-admin-submissions.py --root .",
+    "prebuild": "python3 scripts/import-admin-submissions.py --root .",
+    "postbuild": "node scripts/check-pages-size.mjs out",
+    "test:admin-importer": "python3 -m unittest discover -s tests/admin_importer -p 'test_*.py'",
+    "test:admin-pipeline": "node --test tests/admin_pipeline/*.test.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -15,6 +20,7 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@types/three": "^0.186.0",
+    "fflate": "0.8.3",
     "gsap": "^3.15.0",
     "next": "16.3.0",
     "react": "19.2.8",

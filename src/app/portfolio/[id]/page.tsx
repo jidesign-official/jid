@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import portfolioData from "../../../../public/images/portfolio/portfolio_data.json";
+import { getPortfolioCatalog } from "@/lib/portfolioCatalog";
+import { getAdminProject } from "@/lib/adminProjects";
+import PortfolioBody from "@/components/portfolio/PortfolioBody";
 import DetailGalleryView from "@/components/portfolio/DetailGalleryView";
 import Model3DViewer from "@/components/portfolio/Model3DViewer";
 import { getAssetPath } from "@/lib/basePath";
@@ -9,24 +11,15 @@ import { getProjectDetailImages } from "@/lib/portfolioImages";
 import { sortPortfolioProjects } from "@/lib/portfolioOrdering";
 import { pickPortfolioTagline } from "@/lib/portfolioTaglines";
 
-interface PortfolioItem {
-  id: string;
-  folder: string;
-  title: string;
-  category: string;
-  image: string;
-  description?: string;
-}
-
 export async function generateStaticParams() {
-  return (portfolioData as PortfolioItem[]).map((item) => ({
+  return getPortfolioCatalog().map((item) => ({
     id: item.id,
   }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const project = (portfolioData as PortfolioItem[]).find((p) => p.id === resolvedParams.id);
+  const project = getPortfolioCatalog().find((p) => p.id === resolvedParams.id);
   if (!project) return { title: "Project Not Found - JiD" };
 
   return {
@@ -41,7 +34,7 @@ export default async function PortfolioDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = await params;
-  const projects = sortPortfolioProjects(portfolioData as PortfolioItem[]);
+  const projects = sortPortfolioProjects(getPortfolioCatalog());
   const currentIndex = projects.findIndex((p) => p.id === resolvedParams.id);
 
   if (currentIndex === -1) {
@@ -52,8 +45,9 @@ export default async function PortfolioDetailPage({
   const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : null;
   const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
 
+  const adminProject = getAdminProject(project.id);
   const folderName = project.folder || project.id;
-  const allDetailImages = getProjectDetailImages(folderName);
+  const allDetailImages = adminProject ? [] : getProjectDetailImages(folderName);
   const sequenceNames = new Set(Array.from({ length: 11 }, (_, index) => `jd038_${index + 2}.jpg`));
   const sequenceFrames = folderName === "jd038" ? allDetailImages.filter((image) => sequenceNames.has(image.filename)) : [];
   const detailImages = folderName === "jd038" ? allDetailImages.filter((image) => !sequenceNames.has(image.filename)) : allDetailImages;
@@ -97,7 +91,11 @@ export default async function PortfolioDetailPage({
         </div>
 
         {/* Detail Images Showcase */}
-        <DetailGalleryView images={detailImages} sequenceFrames={sequenceFrames} projectTitle={project.title} />
+        {adminProject ? (
+          <PortfolioBody blocks={adminProject.blocks} projectTitle={project.title} />
+        ) : (
+          <DetailGalleryView images={detailImages} sequenceFrames={sequenceFrames} projectTitle={project.title} />
+        )}
 
         {/* 3D Interactive Model Showcase (Option B) */}
         {modelPaths.map((modelUrl, index) => (
