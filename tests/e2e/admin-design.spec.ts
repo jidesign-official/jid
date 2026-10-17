@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect, type Locator, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -5,7 +6,7 @@ import { createHash } from "node:crypto";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 async function ready(page: Page) {
-  await page.goto(`${basePath}/admin/`);
+  await page.goto(ADMIN_PAGE_PATH);
   const nav = page.getByRole("navigation", { name: "관리 도구 메뉴" });
   await nav.getByRole("button", { name: "프로젝트 목록" }).click();
   await expect(page.getByRole("heading", { name: "프로젝트 목록." })).toBeVisible();

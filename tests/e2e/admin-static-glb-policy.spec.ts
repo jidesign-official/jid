@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
@@ -369,7 +370,7 @@ test("static policy browser upload recovery rejects animation and skin then acce
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/admin/`);
+  await page.goto(ADMIN_PAGE_PATH);
   const upload = page.getByLabel("3D 모델 업로드");
   const alert = page.locator("[data-admin-shell]").getByRole("alert");
   for (const [name, buffer, policy] of [

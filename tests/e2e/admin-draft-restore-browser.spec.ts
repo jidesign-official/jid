@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import { createHash } from "node:crypto";
 
@@ -90,7 +91,7 @@ for (const mode of [5, 6]) {
         return url;
       };
     });
-    await page.goto(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/admin/`);
+    await page.goto(ADMIN_PAGE_PATH);
     await page.evaluate(
       async ({ id, title, manifest, coverBytes, modelBytes }) => {
         const db = await new Promise<IDBDatabase>((resolve, reject) => {

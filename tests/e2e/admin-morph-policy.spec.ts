@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import { validateGlb, inspectAsset } from "../../src/lib/admin/package";
 import fs from "node:fs/promises";
@@ -58,7 +59,7 @@ test("browser rejects morph uploads while leaving the editor usable for a static
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/admin/`);
+  await page.goto(ADMIN_PAGE_PATH);
   await page.getByLabel("3D 모델 업로드").setInputFiles({
     name: "unsupported-morph.glb",
     mimeType: "model/gltf-binary",
@@ -85,7 +86,7 @@ test("browser rejects morph uploads while leaving the editor usable for a static
 test("static model restriction is disclosed in the upload hint and opened manual", async ({
   page,
 }) => {
-  await page.goto(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/admin/`);
+  await page.goto(ADMIN_PAGE_PATH);
   const modelSection = page
     .getByRole("heading", { name: /3D 모델/ })
     .locator("xpath=ancestor::section[1]");

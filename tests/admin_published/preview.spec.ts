@@ -1,9 +1,9 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import path from "node:path";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 
-const prefix = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 test("offline GLB previews have distinct names and render both exact original Blob models", async ({
   page,
@@ -54,7 +54,7 @@ test("offline GLB previews have distinct names and render both exact original Bl
       return response;
     };
   });
-  await page.goto(`${prefix}/admin/`);
+  await page.goto(ADMIN_PAGE_PATH);
   await page
     .getByLabel("프로젝트 ZIP 가져오기")
     .setInputFiles(path.join(process.cwd(), "admin-submissions/jd997.zip"));

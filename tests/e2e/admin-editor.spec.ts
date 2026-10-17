@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import { zipSync, strToU8 } from "fflate";
 import { readFile } from "node:fs/promises";
@@ -14,7 +15,7 @@ const png = Buffer.from(
 test("public editor requires a real cover and supports ordered multi-image blocks, draft and ZIP", async ({
   page,
 }, testInfo) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await expect(page.getByText("공개 편집기", { exact: true })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "ZIP 내보내기", exact: true }),
@@ -102,7 +103,7 @@ for (const blockId of ["cover", "models"]) {
       assets: [asset],
     };
     const archive = await createPackage(manifest, new Map([[asset.id, blob]]));
-    await page.goto("/admin/");
+    await page.goto(ADMIN_PAGE_PATH);
     await page.getByLabel("프로젝트 ZIP 가져오기").setInputFiles({
       name: "jd046.zip",
       mimeType: "application/zip",
@@ -144,7 +145,7 @@ test("editor muted text meets AA on all gallery surfaces and stays light under d
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   const contrast = await page
     .locator("[data-admin-shell]")
     .evaluate((shell) => {
@@ -203,7 +204,7 @@ test("editor muted text meets AA on all gallery surfaces and stays light under d
 test("account links are GitHub authorization, not local authentication", async ({
   page,
 }) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await page.getByRole("button", { name: "계정 · 권한", exact: true }).click();
   await expect(
     page.getByRole("link", { name: "GitHub 로그인" }),
@@ -219,7 +220,7 @@ test("account links are GitHub authorization, not local authentication", async (
 test("reject corrupt upload and responsive page stays in viewport", async ({
   page,
 }) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await page.getByLabel("대표 이미지 업로드").setInputFiles({
     name: "fake.png",
     mimeType: "image/png",
@@ -239,7 +240,7 @@ test("reject corrupt upload and responsive page stays in viewport", async ({
 });
 // A malformed archive must never become a plausible empty project in the editor.
 test("invalid ZIP reports a useful error", async ({ page }) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await page.getByLabel("프로젝트 ZIP 가져오기").setInputFiles({
     name: "jd046.zip",
     mimeType: "application/zip",
@@ -258,7 +259,7 @@ test("unavailable draft storage remains explicit and does not prevent ZIP backup
       configurable: true,
     }),
   );
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await expect(
     page.getByText(/브라우저 초안 저장소를 사용할 수 없습니다/),
   ).toBeVisible();

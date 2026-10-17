@@ -2,7 +2,7 @@
 
 ## Scope
 
-The user-supplied **Apple — Style Reference** applies to `/admin/` and its upload-manual dialog only. Keep the public website's layout, theme toggle, typography and original assets unchanged. This is an editor interface, not a replica of an Apple product launch page: omit pricing, preorder copy and unrelated product imagery.
+The user-supplied **Apple — Style Reference** applies to the administrator editor and its upload-manual dialog only. Keep the public website's layout, theme toggle, typography and original assets unchanged. This is an editor interface, not a replica of an Apple product launch page: omit pricing, preorder copy and unrelated product imagery.
 
 ## Palette and surfaces
 

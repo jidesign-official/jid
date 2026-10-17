@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import { listDrafts, loadDraft, saveDraft } from "../../src/lib/admin/drafts";
 import { ADMIN_LIMITS as L } from "../../src/lib/admin/types";
@@ -677,7 +678,7 @@ for (const field of ["title", "projectId"] as const) {
   }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
-    await page.goto("/admin/");
+    await page.goto(ADMIN_PAGE_PATH);
     const record = {
       id: "broken-summary",
       title: "Draft",
@@ -749,7 +750,7 @@ for (const field of ["title", "projectId"] as const) {
 test("corrupt IndexedDB draft reports recovery without replacing the current editor", async ({
   page,
 }) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await page.evaluate(async () => {
     await new Promise<void>((resolve, reject) => {
       const request = indexedDB.open("jid-public-editor-v1", 1);

@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import { getAssetPath } from "../../src/lib/basePath";
 
@@ -17,7 +18,7 @@ test("local browser preview blob URLs are preserved without turning them into ne
 test("admin is explicitly public, noindex and uses GitHub instead of collecting credentials", async ({
   page,
 }) => {
-  const response = await page.goto(`${basePath}/admin/`);
+  const response = await page.goto(ADMIN_PAGE_PATH);
   expect(response?.status()).toBe(200);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     "content",

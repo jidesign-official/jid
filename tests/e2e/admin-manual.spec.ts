@@ -1,10 +1,11 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import ts from "typescript";
 
 // Opt-in source-component verification while the shared static export is owned by
-// integration. Default runs ALWAYS exercise the actual /admin/ route.
+// integration. Default runs ALWAYS exercise the actual relocated editor route.
 if (process.env.ADMIN_MANUAL_SOURCE_HARNESS === "1") {
   const css = readFileSync(
     join(__dirname, "../../src/components/admin/UploadManual.module.css"),
@@ -63,7 +64,7 @@ if (process.env.ADMIN_MANUAL_SOURCE_HARNESS === "1") {
     require('react-dom/client').createRoot(document.getElementById('root')).render(React.createElement(Harness));
   </script></body></html>`;
   test.beforeEach(async ({ page }) => {
-    await page.route("**/admin/", (route) =>
+    await page.route(`**${ADMIN_PAGE_PATH}`, (route) =>
       route.fulfill({
         status: 200,
         contentType: "text/html; charset=utf-8",
@@ -74,7 +75,7 @@ if (process.env.ADMIN_MANUAL_SOURCE_HARNESS === "1") {
 }
 
 async function openManual(page: Page) {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   const trigger = page.getByRole("button", {
     name: "업로드 매뉴얼",
     exact: true,
@@ -98,7 +99,7 @@ async function openManual(page: Page) {
 test("newmanual: keyboard opens, traps focus, Escape closes and restores the invoking button", async ({
   page,
 }) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   const trigger = page.getByRole("button", {
     name: "업로드 매뉴얼",
     exact: true,
@@ -185,7 +186,7 @@ test("newmanual: Korean guide explains real preparation, automatic naming and Gi
 test("newmanual: filenames follow a valid project ID and fall back safely for invalid IDs", async ({
   page,
 }) => {
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   const id = page.getByLabel("프로젝트 ID", { exact: true });
   const trigger = page.getByRole("button", {
     name: "업로드 매뉴얼",
@@ -215,7 +216,7 @@ test("newmanual: close button and true backdrop close without losing focus or sc
   page,
 }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
-  await page.goto("/admin/");
+  await page.goto(ADMIN_PAGE_PATH);
   await page.evaluate(() => {
     document.body.style.overflow = "auto";
     document.documentElement.style.overflow = "clip";

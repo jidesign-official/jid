@@ -1,3 +1,4 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect, type Locator, type Page } from "@playwright/test";
 import path from "node:path";
 
@@ -16,7 +17,7 @@ async function setRootTheme(page: Page, dark: boolean) {
 }
 
 async function openModelPreview(page: Page, dark: boolean) {
-  await page.goto(`${basePath}/admin/`);
+  await page.goto(ADMIN_PAGE_PATH);
   const nav = page.getByRole("navigation", { name: "관리 도구 메뉴" });
   await nav.getByRole("button", { name: "프로젝트 목록", exact: true }).click();
   await expect(page.getByRole("heading", { name: "프로젝트 목록." })).toBeVisible();

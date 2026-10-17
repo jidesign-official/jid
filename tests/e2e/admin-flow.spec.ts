@@ -1,10 +1,10 @@
+import { ADMIN_PAGE_PATH } from "../helpers/admin-route";
 import { test, expect } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { readPackage } from "../../src/lib/admin/package";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const png = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGD4DwABBAEAX+XDSwAAAABJRU5ErkJggg==",
   "base64",
@@ -18,7 +18,7 @@ for (const withModels of [false, true]) {
     const id = withModels ? "jd997" : "jd996";
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(`${basePath}/admin/`);
+    await page.goto(ADMIN_PAGE_PATH);
     // SSR fields can accept typing before React owns their state. Prove the
     // workspace is interactive through a reversible real navigation first.
     const nav = page.getByRole("navigation", { name: "관리 도구 메뉴" });
