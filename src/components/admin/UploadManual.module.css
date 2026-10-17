@@ -1,37 +1,45 @@
+/* Match the workspace's light gallery, including the native dialog top layer. */
 .trigger {
   min-height: 44px;
   min-width: 44px;
-  padding: 10px 16px;
-  border: 1px solid #567243;
-  border-radius: 8px;
-  background: #edf5e5;
-  color: #21351b;
+  padding: 10px 18px;
+  border: 1px solid #86868b;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #1d1d1f;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
-  line-height: 1.4;
+  font-weight: 400;
+  line-height: 1.43;
   cursor: pointer;
+}
+
+.trigger:hover {
+  background: #f5f5f7;
 }
 
 .dialog {
   position: fixed;
   inset: 0;
-  width: min(760px, calc(100vw - 24px));
+  width: min(800px, calc(100vw - 24px));
   max-width: calc(100vw - 24px);
   max-height: min(880px, calc(100vh - 24px));
   max-height: min(880px, calc(100dvh - 24px));
   margin: auto;
   padding: 0;
   overflow: hidden;
-  border: 1px solid #6b7e60;
-  border-radius: 14px;
-  background: #f8faf5;
-  color: #263021;
-  font-family: inherit;
-  font-size: 15px;
-  line-height: 1.75;
+  border: 1px solid #d6d6d6;
+  border-radius: 28px;
+  background: #ffffff;
+  color: #1d1d1f;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.022em;
   color-scheme: light;
-  box-shadow: 0 24px 80px #0005;
+  box-shadow: none;
 }
 
 .dialog[open] {
@@ -40,7 +48,7 @@
 }
 
 .dialog::backdrop {
-  background: #050b08b8;
+  background: rgb(29 29 31 / 40%);
 }
 
 .header {
@@ -48,22 +56,23 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 18px 24px;
-  border-bottom: 1px solid #b4c2a9;
+  gap: 16px;
+  padding: 28px;
+  border-bottom: 1px solid #d6d6d6;
 }
 
 .header h2 {
   margin: 0;
   color: inherit;
-  font-size: clamp(20px, 4.5vw, 26px);
-  font-weight: 750;
-  line-height: 1.35;
+  font-size: clamp(24px, 4.5vw, 32px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
 .eyebrow {
-  margin: 0 0 4px;
-  color: #4b5c42;
+  margin: 0 0 8px;
+  color: #707070;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -75,19 +84,19 @@
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid #6b7e60;
-  border-radius: 8px;
-  background: #edf5e5;
-  color: #21351b;
+  border: 1px solid #86868b;
+  border-radius: 9999px;
+  background: #f5f5f7;
+  color: #1d1d1f;
   font: inherit;
-  font-size: 30px;
+  font-size: 28px;
   line-height: 1;
   cursor: pointer;
 }
 
 .content {
   min-height: 0;
-  padding: 22px 24px 28px;
+  padding: 28px 28px 40px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
@@ -95,27 +104,28 @@
 }
 
 .content p {
-  margin: 10px 0;
+  margin: 12px 0;
   color: inherit;
 }
 
 .notice {
-  padding: 14px 16px;
-  border: 1px solid #829b6e;
-  border-radius: 8px;
-  background: #e9f1e0;
-  font-weight: 600;
+  padding: 20px;
+  border: 0;
+  border-radius: 20px;
+  background: #f5f5f7;
+  font-size: 15px;
+  font-weight: 400;
 }
 
 .steps {
-  margin: 26px 0 0;
+  margin: 32px 0 0;
   padding-left: 24px;
   list-style: decimal;
 }
 
 .steps > li {
-  margin-top: 28px;
-  padding-left: 5px;
+  margin-top: 40px;
+  padding-left: 8px;
 }
 
 .steps > li:first-child {
@@ -123,44 +133,46 @@
 }
 
 .steps > li::marker {
-  font-weight: 750;
+  color: #707070;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .steps h3 {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   color: inherit;
-  font-size: 17px;
-  font-weight: 750;
-  line-height: 1.5;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .steps ul {
-  margin: 10px 0;
-  padding-left: 18px;
+  margin: 12px 0;
+  padding-left: 20px;
   list-style: disc;
 }
 
 .steps ul li {
-  margin: 8px 0;
+  margin: 12px 0;
 }
 
 .examples {
-  margin: 14px 0;
-  padding: 12px 14px;
-  border: 1px solid #b4c2a9;
-  border-radius: 8px;
-  background: #edf2e7;
+  margin: 20px 0;
+  padding: 20px;
+  border: 0;
+  border-radius: 20px;
+  background: #f5f5f7;
 }
 
 .examples > div {
   display: grid;
-  grid-template-columns: 125px minmax(0, 1fr);
-  gap: 6px 12px;
-  padding: 7px 0;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 8px 16px;
+  padding: 10px 0;
 }
 
 .examples dt {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .examples dd {
@@ -176,16 +188,17 @@
 }
 
 .footnote {
-  padding-left: 12px;
-  border-left: 3px solid #6b7e60;
+  padding-left: 16px;
+  border-left: 2px solid #d6d6d6;
+  color: #707070;
   font-size: 14px;
 }
 
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 .links a {
@@ -194,14 +207,20 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 9px 12px;
-  border: 1px solid #567243;
-  border-radius: 8px;
-  color: #21351b;
-  background: #edf5e5;
-  font-weight: 700;
+  padding: 11px 18px;
+  border: 1px solid #86868b;
+  border-radius: 9999px;
+  color: #0066cc;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.links a:hover {
+  background: #f5f5f7;
   text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 .linkHint {
@@ -211,70 +230,39 @@
 .trigger:focus-visible,
 .close:focus-visible,
 .links a:focus-visible {
-  outline: 3px solid #255fbb;
+  outline: 3px solid #0066cc;
   outline-offset: 3px;
 }
 
 @media (max-width: 480px) {
+  .dialog {
+    font-size: 16px;
+  }
   .header {
-    padding: 14px;
+    padding: 20px;
   }
   .content {
-    padding: 14px 14px 22px;
+    padding: 20px 16px 28px;
   }
   .steps {
     padding-left: 20px;
   }
   .steps > li {
-    padding-left: 2px;
+    padding-left: 4px;
   }
+  .steps h3 {
+    font-size: 19px;
+  }
+  .notice,
   .examples {
-    padding: 10px;
+    padding: 16px;
   }
   .examples > div {
     grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
+    gap: 4px;
   }
   .links {
     flex-direction: column;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .dialog {
-    border-color: #74896a;
-    background: #141c14;
-    color: #e5eddf;
-    color-scheme: dark;
-  }
-  .header {
-    border-color: #506248;
-  }
-  .eyebrow {
-    color: #b7c8ac;
-  }
-  .notice {
-    background: #263720;
-    border-color: #829b6e;
-  }
-  .examples {
-    background: #202c1c;
-    border-color: #506248;
-  }
-  .footnote {
-    border-color: #93ad80;
-  }
-  .trigger,
-  .close,
-  .links a {
-    color: #e5eddf;
-    background: #2a3c22;
-    border-color: #93ad80;
-  }
-  .trigger:focus-visible,
-  .close:focus-visible,
-  .links a:focus-visible {
-    outline-color: #94c8ff;
   }
 }
 

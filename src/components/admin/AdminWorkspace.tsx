@@ -466,7 +466,13 @@ export default function AdminWorkspace({
           className={styles.brand}
           aria-label="JiD 홈페이지"
         >
-          JiD<span>WORKSPACE</span>
+          <img
+            src={getAssetPath("/logo.png")}
+            alt="JiD"
+            width={100}
+            height={51}
+          />
+          <span>WORKSPACE</span>
         </a>
         <div className={styles.publicBadge}>
           <i />
@@ -1281,15 +1287,16 @@ export default function AdminWorkspace({
                   {manifest.models.map(
                     (id, index) =>
                       urls[id] && (
-                        <Model3DViewer
-                          key={urls[id]}
-                          modelUrl={urls[id]}
-                          projectTitle={
-                            manifest.models.length > 1
-                              ? `${manifest.project.title} — 모델 ${index + 1}`
-                              : manifest.project.title
-                          }
-                        />
+                        <div key={urls[id]} className={styles.modelPreview}>
+                          <Model3DViewer
+                            modelUrl={urls[id]}
+                            projectTitle={
+                              manifest.models.length > 1
+                                ? `${manifest.project.title} — 모델 ${index + 1}`
+                                : manifest.project.title
+                            }
+                          />
+                        </div>
                       ),
                   )}
                 </section>

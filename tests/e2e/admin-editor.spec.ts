@@ -140,7 +140,7 @@ for (const blockId of ["cover", "models"]) {
   });
 }
 
-test("editor muted text meets AA contrast on both light surfaces and preserves dark tokens", async ({
+test("editor muted text meets AA on all gallery surfaces and stays light under dark preference", async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
@@ -170,7 +170,7 @@ test("editor muted text meets AA contrast on both light surfaces and preserves d
             0,
           );
       const muted = luminance(rgb("--muted"));
-      const ratios = ["--bg", "--surface"].map((token) => {
+      const ratios = ["--bg", "--surface", "--stage"].map((token) => {
         const background = luminance(rgb(token));
         return (
           (Math.max(muted, background) + 0.05) /
@@ -190,7 +190,9 @@ test("editor muted text meets AA contrast on both light surfaces and preserves d
           getComputedStyle(shell).getPropertyValue("--muted").trim(),
         ),
     )
-    .toBe("#9ba598");
+    .toBe("#707070");
+  await expect(page.locator("[data-admin-shell]")).toHaveCSS("color-scheme", "light");
+  await expect(page.locator("[data-admin-shell]")).toHaveCSS("background-color", "rgb(255, 255, 255)");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

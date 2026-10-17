@@ -19,10 +19,17 @@ for (const withModels of [false, true]) {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(`${basePath}/admin/`);
+    // SSR fields can accept typing before React owns their state. Prove the
+    // workspace is interactive through a reversible real navigation first.
+    const nav = page.getByRole("navigation", { name: "관리 도구 메뉴" });
+    await nav.getByRole("button", { name: "프로젝트 목록", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "프로젝트 목록." })).toBeVisible();
+    await nav.getByRole("button", { name: "편집기", exact: true }).click();
     await page.getByLabel("프로젝트 ID", { exact: true }).fill(id);
     await page
       .getByLabel("프로젝트 제목", { exact: true })
       .fill(`CMS QA ONLY ${id} — not for publication`);
+    await expect(page.getByLabel("프로젝트 ID", { exact: true })).toHaveValue(id);
     await page
       .getByRole("combobox", { name: "카테고리", exact: true })
       .selectOption(withModels ? "Product" : "UX/UI");
