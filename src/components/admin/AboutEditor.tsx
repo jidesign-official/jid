@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
+import { aboutContentToHtml, aboutHtmlToContent, MAX_ABOUT_HTML_BYTES } from "@/lib/aboutHtml";
 import {
   ABOUT_CONTENT_FILENAME,
   MAX_ABOUT_CONTENT_BYTES,
@@ -13,6 +14,11 @@ import styles from "./AboutEditor.module.css";
 
 const REPO = "https://github.com/jidesign-official/jid";
 const clone = (value: AboutContent): AboutContent => JSON.parse(JSON.stringify(value));
+// Object property order is representation, while array order and every value are content.
+const fingerprint = (value: AboutContent) => JSON.stringify(value, (_key, entry: unknown) =>
+  entry && typeof entry === "object" && !Array.isArray(entry)
+    ? Object.fromEntries(Object.entries(entry).sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0))
+    : entry);
 const explanation = (error: unknown) => error instanceof Error ? error.message : "파일 내용을 확인하고 다시 시도해 주세요.";
 function moved<T>(items: T[], index: number, delta: number): T[] {
   const target = index + delta;
@@ -49,17 +55,25 @@ export default function AboutEditor({ initialContent, onDirtyChange }: {
   onDirtyChange: (dirty: boolean) => void;
 }) {
   const [content, setContent] = useState(() => clone(initialContent));
+  const [mode, setMode] = useState<"editor" | "html">("editor");
+  // Generate only on request: valid JSON may contain text HTML cannot represent losslessly.
+  const [htmlSource, setHtmlSource] = useState("");
+  const [appliedSource, setAppliedSource] = useState("");
+  const [modeError, setModeError] = useState("");
+  const modeId = useId();
   const [status, setStatus] = useState("변경 사항은 이 탭에만 유지됩니다. 새로고침하면 사라집니다.");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const busyLock = useRef(false), mounted = useRef(false), epoch = useRef(0);
   const dirtyRef = useRef(false);
   const downloads = useRef(new Map<string, ReturnType<typeof setTimeout>>());
-  const dirty = JSON.stringify(content) !== JSON.stringify(initialContent);
+  const initialFingerprint = useMemo(() => fingerprint(initialContent), [initialContent]);
+  const draftFingerprint = useMemo(() => fingerprint(content), [content]);
+  const dirty = draftFingerprint !== initialFingerprint || htmlSource !== appliedSource;
   const validation = useMemo(() => {
-    try { return { text: serializeAboutContent(content), error: "" }; }
-    catch (cause) { return { text: "", error: `내보낼 수 없습니다. 입력 내용을 확인해 주세요: ${explanation(cause)}` }; }
-  }, [content]);
+    try { return { text: serializeAboutContent(mode === "html" ? aboutHtmlToContent(htmlSource) : content), error: "" }; }
+    catch (cause) { return { text: "", error: `내보낼 수 없습니다. ${mode === "html" ? "HTML 소스를" : "입력 내용을"} 확인해 주세요: ${explanation(cause)}` }; }
+  }, [content, mode, htmlSource]);
   useEffect(() => { dirtyRef.current = dirty; onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   useEffect(() => {
     mounted.current = true;
@@ -73,9 +87,48 @@ export default function AboutEditor({ initialContent, onDirtyChange }: {
       urls.clear();
     };
   }, []);
+  function switchMode(next: "editor" | "html"): boolean {
+    if (busyLock.current) return false;
+    if (next === mode) return true;
+    try {
+      if (next === "html") {
+        // A valid compact publication can exceed the pretty-JSON export budget.
+        // Keep both editing views available so the user can reduce that content.
+        const generated = aboutContentToHtml(content);
+        setHtmlSource(generated);
+        setAppliedSource(generated);
+      } else {
+        const restored = aboutHtmlToContent(htmlSource);
+        const generated = aboutContentToHtml(restored);
+        setContent(restored);
+        setHtmlSource(generated);
+        setAppliedSource(generated);
+        dirtyRef.current = fingerprint(restored) !== initialFingerprint;
+      }
+      setMode(next);
+      setModeError("");
+      return true;
+    } catch (cause) {
+      setModeError(`모드를 바꾸지 못했습니다. 현재 편집 내용은 유지됩니다: ${explanation(cause)}`);
+      return false;
+    }
+  }
+  function modeKey(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === "Home" ? "editor" : event.key === "End" ? "html" : mode === "editor" ? "html" : "editor";
+    if (switchMode(next)) document.getElementById(`${modeId}-${next}-tab`)?.focus();
+  }
+  function editSource(value: string) {
+    if (busyLock.current) return;
+    dirtyRef.current = draftFingerprint !== initialFingerprint || value !== appliedSource;
+    setHtmlSource(value);
+    setModeError("");
+  }
   function edit(update: (value: AboutContent) => AboutContent) {
     if (busyLock.current) return;
     dirtyRef.current = true;
+    setModeError("");
     setContent((value) => update(value));
   }
   async function importContent(event: ChangeEvent<HTMLInputElement>) {
@@ -91,9 +144,13 @@ export default function AboutEditor({ initialContent, onDirtyChange }: {
       const source = await file.text();
       if (!active()) return;
       const restored = parseAboutContent(source);
+      const generated = mode === "html" ? aboutContentToHtml(restored) : "";
       if (dirtyRef.current && !window.confirm("게시되지 않은 About 변경 사항을 가져온 파일로 바꾸시겠습니까? 현재 로컬 편집 내용이 사라집니다.")) return;
       setContent(restored);
-      dirtyRef.current = JSON.stringify(restored) !== JSON.stringify(initialContent);
+      setHtmlSource(generated);
+      setAppliedSource(generated);
+      setModeError("");
+      dirtyRef.current = fingerprint(restored) !== initialFingerprint;
       setError("");
       setStatus("About JSON을 가져왔습니다. 아직 게시되지 않았습니다.");
     } catch (cause) {
@@ -116,6 +173,11 @@ export default function AboutEditor({ initialContent, onDirtyChange }: {
     if (!window.confirm("이 탭의 모든 로컬 변경 사항을 지우고 현재 게시된 About 내용으로 되돌리시겠습니까? GitHub의 파일은 바뀌지 않습니다.")) return;
     epoch.current++;
     setContent(clone(initialContent));
+    // Reset also works for published JSON that cannot be represented as HTML.
+    setMode("editor");
+    setHtmlSource("");
+    setAppliedSource("");
+    setModeError("");
     dirtyRef.current = false;
     setError("");
     setStatus("현재 게시된 About 내용으로 되돌렸습니다. 이 탭의 로컬 변경 사항만 지웠습니다.");
@@ -146,9 +208,14 @@ export default function AboutEditor({ initialContent, onDirtyChange }: {
       <span>새로고침하면 이 탭의 로컬 변경 사항이 사라집니다.</span>
     </div>
     {error && <p className={styles.error} role="alert">{error}</p>}
+    {modeError && <p className={styles.error} role="alert">{modeError}</p>}
     <p className={styles.status} role="status" aria-live="polite">{busy ? "About 파일을 읽고 검증하고 있습니다…" : status}</p>
+    <div className={styles.modeTabs} role="tablist" aria-label="About 편집 방식">
+      <button type="button" role="tab" id={`${modeId}-editor-tab`} aria-controls={`${modeId}-editor-panel`} aria-selected={mode === "editor"} tabIndex={mode === "editor" ? 0 : -1} disabled={busy} onKeyDown={modeKey} onClick={() => switchMode("editor")}>에디터</button>
+      <button type="button" role="tab" id={`${modeId}-html-tab`} aria-controls={`${modeId}-html-panel`} aria-selected={mode === "html"} tabIndex={mode === "html" ? 0 : -1} disabled={busy} onKeyDown={modeKey} onClick={() => switchMode("html")}>HTML</button>
+    </div>
     <div className={styles.layout}>
-      <fieldset className={styles.forms} aria-label="About 텍스트 편집" disabled={busy}>
+      {mode === "editor" ? <fieldset className={styles.forms} role="tabpanel" id={`${modeId}-editor-panel`} aria-labelledby={`${modeId}-editor-tab`} aria-label="About 텍스트 편집" disabled={busy}>
         <section className={styles.card} aria-label="섹션 제목 편집">
           <div className={styles.sectionHeading}><span>01</span><h2>페이지의 첫인상</h2></div>
           <p className={styles.hint}>각 섹션의 제목과 소개 문구를 편집합니다. 모든 필드는 일반 텍스트입니다.</p>
@@ -199,7 +266,17 @@ export default function AboutEditor({ initialContent, onDirtyChange }: {
           </article>)}
           <button type="button" aria-label="서비스 추가" disabled={content.services.length >= 30} onClick={() => edit((c) => ({ ...c, services: [...c.services, { name: "", description: "" }] }))}>＋ 서비스 추가</button>
         </section>
-      </fieldset>
+      </fieldset> : <fieldset className={styles.forms} role="tabpanel" id={`${modeId}-html-panel`} aria-labelledby={`${modeId}-html-tab`} disabled={busy}>
+        <section className={styles.card}>
+          <div className={styles.sectionHeading}><h2>같은 내용을 HTML로.</h2></div>
+          <p className={styles.hint} id={`${modeId}-html-help`}>기존 About의 소개·철학·연혁·서비스·링크 문구를 편집합니다. data-about-* 표시와 섹션·필드 구조는 에디터와 연결되므로 유지해 주세요. 목록 항목은 같은 구조 안에서 추가·삭제·순서 변경할 수 있습니다. 임의의 페이지 HTML, 인라인 서식, 스크립트·이벤트·CSS·이미지·iframe과 링크 주소 변경은 지원하지 않습니다.</p>
+          <label className={styles.field}>
+            <span>About HTML 소스</span>
+            <textarea className={styles.source} aria-label="About HTML 소스" aria-describedby={`${modeId}-html-help`} value={htmlSource} maxLength={MAX_ABOUT_HTML_BYTES} spellCheck={false} autoCapitalize="off" autoCorrect="off" rows={24} onChange={(event) => editSource(event.target.value)} />
+          </label>
+          <p className={styles.hint}>HTML은 실행하거나 미리보기로 삽입하지 않습니다. 에디터 전환·JSON 내보내기 전에 구조와 내용을 검증합니다. 지원하지 않는 내용은 삭제하지 않고 오류로 안내합니다. 소스는 최대 512KiB, 내보내는 JSON은 최대 64KiB입니다.</p>
+        </section>
+      </fieldset>}
       <aside className={styles.publish} aria-label="About JSON 게시 안내">
         <span className={styles.eyebrow}>TEXT → JSON → GITHUB</span>
         <h2>완성한 문장을 사이트로.</h2>

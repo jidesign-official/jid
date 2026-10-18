@@ -2,7 +2,7 @@
 
 ## Scope and publication
 
-Add an **About Us 편집** tab to the existing public administrator. Keep GitHub-only publication, the exact obscure editor route/noindex, the existing Apple-style editor, project ZIPs and portfolio settings unchanged. Edit text/structured lists, not HTML, layout, CSS, images or arbitrary URLs. No new authentication service or frontend credentials.
+Add an **About Us 편집** tab to the existing public administrator. Keep GitHub-only publication, the exact obscure editor route/noindex, the existing Apple-style editor, project ZIPs and portfolio settings unchanged. Published data remains text/structured lists, not raw HTML, layout, CSS, images or arbitrary URLs. The user additionally selected synchronized editor/HTML-source views: [about-html-format.md](about-html-format.md) defines that compatible representation and its strict conversion grammar. It does not change this JSON schema or introduce an HTML-rendering channel. No new authentication service or frontend credentials.
 
 The browser imports/exports **about-content.json**. Upload/replace this file at repository root and commit; it is neither a project ZIP nor portfolio-settings.json. Download/import/local edits are not publication. Same-commit build validation must fail closed for invalid present content. Keep original src/data/about.ts and ABOUT US.docx immutable as the default/original reference. Initial deployed copy, structure, styling, links, metadata and original 54 business strings remain unchanged.
 

@@ -40,10 +40,17 @@ async function readDownload(download: Download) {
   expect(Object.keys(value)).toEqual(["schemaVersion", "headings", "introduction", "philosophy", "history", "services", "links"]);
   return { text, value, download };
 }
+// Chromium LocalFrame::ShouldThrottleDownload silently drops >10 requests/second.
+// Pace only this test driver; keep every real download/content assertion intact.
+const lastDownloadAt = new WeakMap<Page, number>();
 async function exported(page: Page) {
+  const remaining = 125 - (performance.now() - (lastDownloadAt.get(page) ?? -Infinity));
+  if (remaining > 0) await new Promise<void>((resolve) => setTimeout(resolve, remaining));
   const download = page.waitForEvent("download");
   await editor(page).getByRole("button", { name: "About JSON 내보내기", exact: true }).click();
-  return readDownload(await download);
+  const actual = await download;
+  lastDownloadAt.set(page, performance.now());
+  return readDownload(actual);
 }
 async function importText(page: Page, text: string) {
   await editor(page).getByLabel("About JSON 가져오기", { exact: true }).setInputFiles({ name: "about-content.json", mimeType: "application/json", buffer: Buffer.from(text) });

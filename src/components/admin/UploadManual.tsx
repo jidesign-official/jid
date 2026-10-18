@@ -307,6 +307,9 @@ export default function UploadManual({ projectId }: { projectId: string }) {
                 <strong> 저장소 루트에 업로드·교체하고 커밋</strong>하세요.
                 프로젝트 ZIP 폴더에 넣지 마세요. 원본 Word 문서는 변경하지 않으며,
                 다운로드·가져오기만으로 실제 About 페이지가 바뀌지는 않습니다.
+                에디터와 HTML은 같은 내용을 편집하는 보기이며, HTML을 수정해도
+                게시할 파일은 같은 JSON입니다. HTML의 구조 표식을 유지하고,
+                지원하지 않는 태그·속성 오류는 수정한 뒤 전환·내보내기하세요.
               </p>
               <div className={styles.links}>
                 <a

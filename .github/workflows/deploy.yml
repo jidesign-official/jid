@@ -40,6 +40,7 @@ jobs:
           npm run test:admin-pipeline
           npm run test:portfolio-settings
           npm run test:about-content
+          npm run test:about-html
 
       - name: Build with Next.js
         run: npm run build
