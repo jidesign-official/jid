@@ -7,7 +7,9 @@ import dynamic from "next/dynamic";
 import PortfolioBody from "@/components/portfolio/PortfolioBody";
 import UploadManual from "./UploadManual";
 import PortfolioManager from "./PortfolioManager";
+import AboutEditor from "./AboutEditor";
 import type { PortfolioSettings } from "@/lib/portfolioSettings";
+import type { AboutContent } from "@/lib/aboutContent";
 import { getAssetPath } from "@/lib/basePath";
 import type {
   AdminBlock,
@@ -92,6 +94,7 @@ const tabs = [
   ["catalog", "프로젝트 목록", "02"],
   ["publish", "게시 안내", "03"],
   ["account", "계정 · 권한", "04"],
+  ["about", "About Us 편집", "05"],
 ] as const;
 type Tab = (typeof tabs)[number][0];
 type UploadTarget =
@@ -102,12 +105,15 @@ type UploadTarget =
 export default function AdminWorkspace({
   projects,
   initialSettings,
+  initialAboutContent,
 }: {
   projects: AdminCatalogProject[];
   initialSettings: PortfolioSettings;
+  initialAboutContent: AboutContent;
 }) {
   const [tab, setTab] = useState<Tab>("editor");
   const [catalogDirty, setCatalogDirty] = useState(false);
+  const [aboutDirty, setAboutDirty] = useState(false);
   const [data, setData] = useState<PackageData>(() => initialData(projects));
   const [dirty, setDirty] = useState(false),
     [busy, setBusy] = useState(false),
@@ -129,8 +135,8 @@ export default function AdminWorkspace({
     dirtyRef = useRef(dirty),
     busyLock = useRef(false);
   useEffect(() => {
-    dirtyRef.current = dirty || catalogDirty;
-  }, [dirty, catalogDirty]);
+    dirtyRef.current = dirty || catalogDirty || aboutDirty;
+  }, [dirty, catalogDirty, aboutDirty]);
   const legacyIds = useMemo(() => legacyProjects.map((p) => p.id), []);
   const manifest = data.manifest;
   const filenamePrefix = /^jd\d{3}(?:_[a-z]+)?$/.test(manifest.project.id)
@@ -514,7 +520,7 @@ export default function AdminWorkspace({
             <span className={styles.localState}>
               {busy
                 ? "● 처리 중…"
-                : dirty || catalogDirty
+                : dirty || catalogDirty || aboutDirty
                   ? "● 저장하지 않은 변경"
                   : "○ 로컬 작업 공간"}
             </span>
@@ -1312,6 +1318,12 @@ export default function AdminWorkspace({
               projects={projects}
               initialSettings={initialSettings}
               onDirtyChange={setCatalogDirty}
+            />
+          </div>
+          <div hidden={tab !== "about"}>
+            <AboutEditor
+              initialContent={initialAboutContent}
+              onDirtyChange={setAboutDirty}
             />
           </div>
           {tab === "publish" && (

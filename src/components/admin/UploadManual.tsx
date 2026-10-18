@@ -300,6 +300,14 @@ export default function UploadManual({ projectId }: { projectId: string }) {
                 작품으로 교체해야 합니다. 게시 제외는 원본 파일을 삭제하거나
                 직접 파일 주소까지 비공개로 만드는 기능이 아닙니다.
               </p>
+              <p>
+                회사 소개는 별도의 <strong>About Us 편집</strong> 메뉴에서
+                수정합니다. 내보낸 <code>about-content.json</code>은
+                <code>portfolio-settings.json</code>과도 다른 파일이며,
+                <strong> 저장소 루트에 업로드·교체하고 커밋</strong>하세요.
+                프로젝트 ZIP 폴더에 넣지 마세요. 원본 Word 문서는 변경하지 않으며,
+                다운로드·가져오기만으로 실제 About 페이지가 바뀌지는 않습니다.
+              </p>
               <div className={styles.links}>
                 <a
                   href={`${REPOSITORY}/upload/main/admin-submissions`}

@@ -48,6 +48,19 @@ GitHub Pages의 커스텀 도메인은 `jid.kr`이며 사이트는 `/jid` 없이
 
 프로젝트 ZIP 자체를 저장소에서 삭제할 경우 관리 설정에 남은 해당 ID 참조도 함께 정리해야 합니다. 일반적인 작업에는 원본 삭제 대신 **게시 제외/복원**을 권장합니다. 형식·검증 규칙은 [관리 설정 계약](docs/portfolio-management-format.md), 검사 명령은 `npm run test:portfolio-settings`입니다.
 
+### About Us 편집
+
+관리자 **About Us 편집** 메뉴에서 소개 제목·부제·본문, 섹션 제목, 디자인 철학, 회사 연혁, 서비스 및 링크의 표시 문구를 수정합니다. 철학·연혁·서비스와 연도별 연혁 문구는 추가·삭제·순서 변경이 가능합니다. 링크 목적지와 공개 페이지 디자인은 유지하며 HTML·CSS·이미지를 편집하는 기능은 아닙니다.
+
+1. 현재 게시 내용을 불러온 상태에서 수정합니다. 새 기능의 초기값은 기존 About의 원문 그대로입니다.
+2. 내보내기 기능으로 **`about-content.json`**을 보관합니다. 필수 내용과 형식이 잘못되면 내보내기를 차단합니다.
+3. [GitHub 저장소 루트](https://github.com/jidesign-official/jid/upload/main/)에 같은 이름으로 업로드·교체하고 `main`에 커밋합니다. `portfolio-settings.json`과 별도 파일이며 ZIP 폴더 `admin-submissions/`에 올리지 않습니다.
+4. Actions 검증·배포 완료 후 `/about/`을 확인합니다. 다운로드·가져오기만으로는 사이트가 변경되지 않습니다. 잘못된 파일은 배포를 차단하여 현재 정상 사이트를 유지합니다.
+
+탭을 이동해도 편집 상태는 유지하지만, 자동 저장이나 다른 기기와의 동기화는 하지 않습니다. 새로고침 전 JSON으로 보관하세요. 가져오기 실패 시 현재 초안을 유지하며, 확인 후 현재 게시 내용으로 되돌릴 수 있습니다. 원본 `ABOUT US.docx`와 `src/data/about.ts`는 덮어쓰지 않습니다. **현재 게시된 About 보기**는 지금 공개된 페이지이며, 미저장 초안의 미리보기가 아닙니다.
+
+형식·제한은 [About 콘텐츠 계약](docs/about-content-format.md), 검증 명령은 `npm run test:about-content`입니다. 전체 JSON은 UTF-8 64KiB 이내여야 하며 HTML처럼 보이는 입력도 실행하지 않고 일반 텍스트로 표시합니다.
+
 ### 대용량 원본 영상 보관
 
 `public/images/home/intro_all.mp4`는 GitHub 일반 파일의 100MiB 제한을 초과하여 Git 이력 대신 [원본 자산 Release](https://github.com/jidesign-official/jid/releases/tag/source-assets-20261014)에 원본 그대로 보관합니다. 실제 사이트의 히어로 영상은 저장소에 포함된 `public/images/home/intro.webm`을 사용합니다.
