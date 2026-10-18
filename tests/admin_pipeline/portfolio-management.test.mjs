@@ -13,7 +13,7 @@ const featured = ["jd025_c", "jd008_b", "jd005_b", "jd013"];
 async function publicationFixture(t) {
   const directory = await fs.mkdtemp(path.join(process.env.TMPDIR || os.tmpdir(), "portfolio-publication-"));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
-  for (const name of ["package.json", "src/lib", "tests/portfolio_settings", "scripts/import-admin-submissions.py", "public/images/portfolio/portfolio_data.json"]) {
+  for (const name of ["package.json", "tsconfig.json", "src/lib", "tests/portfolio_settings", "scripts/import-admin-submissions.py", "public/images/portfolio/portfolio_data.json"]) {
     const target = path.join(directory, name);
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.cp(new URL(name, root), target, { recursive: true });

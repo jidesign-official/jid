@@ -2,10 +2,14 @@ import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import { createRequire } from "node:module";
 import ts from "typescript";
 
 type SettingsApi = typeof import("../../src/lib/portfolioSettings");
 
+// Use Playwright's CommonJS TypeScript hook on both Node 20 and newer Node.
+// Its Node 20 async ESM loader can preserve exports while reporting CommonJS.
+const requireModule = createRequire(__filename);
 const root = path.resolve(__dirname, "../..");
 const featured = ["jd025_c", "jd008_b", "jd005_b", "jd013"];
 const ids = ["jd038", ...featured, "jd002", "jd099"];
@@ -26,19 +30,19 @@ test.afterEach(() => {
 async function settingsApi() {
   // Feature absence must fail here, not as a mistyped module import.
   expect(fs.existsSync(path.join(root, "src/lib/portfolioSettings.ts")), "client-safe settings module exists").toBe(true);
-  return import("../../src/lib/portfolioSettings");
+  return requireModule("../../src/lib/portfolioSettings") as SettingsApi;
 }
 
 async function managementApi() {
   expect(fs.existsSync(path.join(root, "src/lib/portfolioManagement.ts")), "server management module exists").toBe(true);
-  return import("../../src/lib/portfolioManagement");
+  return requireModule("../../src/lib/portfolioManagement") as typeof import("../../src/lib/portfolioManagement");
 }
 
 async function managementWithFs(overrides: Partial<typeof fs>) {
   const dependencies: Record<string, unknown> = {
     "node:fs": { ...fs, ...overrides }, "node:path": path,
-    "./portfolioCatalog": await import("../../src/lib/portfolioCatalog"),
-    "./portfolioOrdering": await import("../../src/lib/portfolioOrdering"),
+    "./portfolioCatalog": requireModule("../../src/lib/portfolioCatalog") as typeof import("../../src/lib/portfolioCatalog"),
+    "./portfolioOrdering": requireModule("../../src/lib/portfolioOrdering") as typeof import("../../src/lib/portfolioOrdering"),
     "./portfolioSettings": await settingsApi(),
   };
   const source = fs.readFileSync(path.join(root, "src/lib/portfolioManagement.ts"), "utf8");
@@ -147,8 +151,8 @@ test("export enforces UTF-8 bound after full-order expansion", async () => {
 
 test("isolated defaults preserve the 69-project legacy baseline and current four", async () => {
   const { getPortfolioManagement } = await managementApi();
-  const { getPortfolioCatalog } = await import("../../src/lib/portfolioCatalog");
-  const { sortPortfolioProjects } = await import("../../src/lib/portfolioOrdering");
+  const { getPortfolioCatalog } = requireModule("../../src/lib/portfolioCatalog") as typeof import("../../src/lib/portfolioCatalog");
+  const { sortPortfolioProjects } = requireModule("../../src/lib/portfolioOrdering") as typeof import("../../src/lib/portfolioOrdering");
   const isolated = fixtureRoot();
   const raw = getPortfolioCatalog(isolated);
   const original = structuredClone(raw);
@@ -167,8 +171,8 @@ test("isolated defaults preserve the 69-project legacy baseline and current four
 
 test("isolated root controls baseline model resolution without changing the raw catalog", async () => {
   const { getPortfolioManagement } = await managementApi();
-  const { getPortfolioCatalog } = await import("../../src/lib/portfolioCatalog");
-  const { sortPortfolioProjects } = await import("../../src/lib/portfolioOrdering");
+  const { getPortfolioCatalog } = requireModule("../../src/lib/portfolioCatalog") as typeof import("../../src/lib/portfolioCatalog");
+  const { sortPortfolioProjects } = requireModule("../../src/lib/portfolioOrdering") as typeof import("../../src/lib/portfolioOrdering");
   const isolated = fixtureRoot();
   const raw = getPortfolioCatalog(isolated);
   const original = structuredClone(raw);
@@ -181,8 +185,8 @@ test("isolated root controls baseline model resolution without changing the raw 
 
 test("manual order, reversible hiding, and image-only featured projects resolve independently", async () => {
   const { getPortfolioManagement } = await managementApi();
-  const { getPortfolioCatalog } = await import("../../src/lib/portfolioCatalog");
-  const { getProjectModelPaths } = await import("../../src/lib/portfolioModels");
+  const { getPortfolioCatalog } = requireModule("../../src/lib/portfolioCatalog") as typeof import("../../src/lib/portfolioCatalog");
+  const { getProjectModelPaths } = requireModule("../../src/lib/portfolioModels") as typeof import("../../src/lib/portfolioModels");
   const isolated = fixtureRoot();
   const raw = structuredClone(getPortfolioCatalog(isolated));
   const baseline = getPortfolioManagement(isolated).allProjects;
@@ -281,8 +285,8 @@ test("literal initial-settings fixture preserves unchanged defaults at an isolat
 test("checked-out publication settings resolve against the complete current catalog", async () => {
   const api: SettingsApi = await settingsApi();
   const { getPortfolioManagement } = await managementApi();
-  const { getPortfolioCatalog } = await import("../../src/lib/portfolioCatalog");
-  const { sortPortfolioProjects } = await import("../../src/lib/portfolioOrdering");
+  const { getPortfolioCatalog } = requireModule("../../src/lib/portfolioCatalog") as typeof import("../../src/lib/portfolioCatalog");
+  const { sortPortfolioProjects } = requireModule("../../src/lib/portfolioOrdering") as typeof import("../../src/lib/portfolioOrdering");
   // npm's pretest hook imports this checkout's real ZIPs before this validation.
   // Default-content oracles belong only to isolated fixtures, never this root.
   const baseline = sortPortfolioProjects(getPortfolioCatalog(root), root);
@@ -336,7 +340,7 @@ test("normalization accepts frozen arrays and appends new IDs in baseline order"
 
 test("CMS additions append without resetting stored order and can be image-only featured", async () => {
   const { getPortfolioManagement } = await managementApi();
-  const { getPortfolioCatalog } = await import("../../src/lib/portfolioCatalog");
+  const { getPortfolioCatalog } = requireModule("../../src/lib/portfolioCatalog") as typeof import("../../src/lib/portfolioCatalog");
   const isolated = fixtureRoot();
   const previous = getPortfolioManagement(isolated);
   const filename = path.join(isolated, "portfolio-settings.json");
@@ -386,7 +390,7 @@ test("missing root settings ignore similarly named nested files", async () => {
 });
 
 test("baseline sorting keeps pinned/model-count/byte-size/stable-tie rules at an isolated root", async () => {
-  const { sortPortfolioProjects } = await import("../../src/lib/portfolioOrdering");
+  const { sortPortfolioProjects } = requireModule("../../src/lib/portfolioOrdering") as typeof import("../../src/lib/portfolioOrdering");
   const isolated = fixtureRoot();
   const folder = path.join(isolated, "public/images/glb");
   fs.mkdirSync(folder, { recursive: true });
