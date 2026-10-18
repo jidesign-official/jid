@@ -76,14 +76,14 @@ test("all four portfolio pagination pages display the new names while retaining 
 test("homepage cards follow the four requested project URLs in exact order with image-only presentation", async ({ page }) => {
   await page.goto(`${basePath}/`);
   const ids = ["jd025_c", "jd008_b", "jd005_b", "jd013"];
-  const grid = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true });
+  const grid = page.getByRole("region", { name: "대표 프로젝트", exact: true });
   const cards = grid.getByRole("link");
   await expect(cards).toHaveCount(4);
   expect(await cards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href"))))
     .toEqual(ids.map((id) => `${basePath}/portfolio/${id}/`));
   for (const [index, id] of ids.entries()) {
     const card = cards.nth(index);
-    await expect(card).toHaveAttribute("aria-label", `${expectedTitles[id]} 3D 모델 보기`);
+    await expect(card).toHaveAttribute("aria-label", `${expectedTitles[id]} 프로젝트 보기`);
     await expect(card.locator("img")).toHaveAttribute("alt", expectedTitles[id]);
     await expect(card.locator("h2, p, span")).toHaveCount(0);
     expect((await card.textContent())?.trim()).toBe("");

@@ -9,6 +9,7 @@ import portfolioData from "../../public/images/portfolio/portfolio_data.json";
 import { getProjectModelPaths } from "../../src/lib/portfolioModels";
 import { modelProjects } from "./helpers/model-cases";
 import { getPortfolioCatalog } from "../../src/lib/portfolioCatalog";
+import { getPortfolioManagement } from "../../src/lib/portfolioManagement";
 
 type Project = { id: string; folder?: string };
 type SortProjects = <T extends Project>(projects: readonly T[]) => T[];
@@ -32,6 +33,7 @@ function loadModule(relative: string, dependencies: Record<string, unknown>) {
       if (id === "@/lib/portfolioModels" || id === "./portfolioModels") return { getProjectModelPaths };
       if (id.endsWith("portfolio_data.json")) return portfolioData;
       if (id === "@/lib/portfolioCatalog") return { getPortfolioCatalog };
+      if (id === "@/lib/portfolioManagement") return { getPortfolioManagement };
       throw new Error(`Unexpected portfolio dependency: ${id}`);
     },
   }, { filename });

@@ -7,7 +7,7 @@ for (const motion of ["no-preference", "reduce"] as const) {
     await page.emulateMedia({ reducedMotion: motion });
     await page.goto(`${basePath}/`);
     const hero = page.getByRole("region", { name: "JiD 소개 영상" });
-    const cards = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트" });
+    const cards = page.getByRole("region", { name: "대표 프로젝트" });
     for (const viewport of [{ width: 390, height: 844 }, { width: 390, height: 1100 }, { width: 320, height: 568 }, { width: 767, height: 844 }, { width: 768, height: 844 }, { width: 1440, height: 900 }]) {
       await page.setViewportSize(viewport);
       await page.evaluate(() => window.scrollTo(0, 0));

@@ -8,6 +8,8 @@
     "postbuild": "node scripts/check-pages-size.mjs out",
     "test:admin-importer": "python3 -m unittest discover -s tests/admin_importer -p 'test_*.py'",
     "test:admin-pipeline": "node --test tests/admin_pipeline/*.test.mjs",
+    "pretest:portfolio-settings": "python3 scripts/import-admin-submissions.py --root .",
+    "test:portfolio-settings": "playwright test --config tests/portfolio_settings/settings.config.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

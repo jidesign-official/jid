@@ -286,10 +286,19 @@ export default function UploadManual({ projectId }: { projectId: string }) {
                 업로드하세요. 실패한 ZIP은 새 게시로 반영되지 않습니다.
               </p>
               <p>
-                기존 69개 프로젝트는 이 편집기에서 읽기 전용입니다. 이 CMS로
+                기존 69개 프로젝트의 이미지·본문 원본은 이 편집기에서 읽기 전용입니다. 이 CMS로
                 만든 프로젝트는 보관한 같은 ZIP을 가져와 수정하고, 같은 프로젝트
                 ID·ZIP 이름으로 다시 내보내 업로드하면 업데이트됩니다. 같은 ZIP
                 파일을 교체하는 방식입니다.
+              </p>
+              <p>
+                전체 순서·게시 제외/복원·메인 대표 4개 선택은 프로젝트 목록에서
+                관리합니다. 설정 JSON 내보내기의 <code>portfolio-settings.json</code>은
+                프로젝트 ZIP과 다른 파일입니다. <strong>admin-submissions 폴더가
+                아니라 저장소 루트에 업로드하고 커밋</strong>하세요. 현재 메인 4개는
+                처음부터 선택되어 있으며, 메인에 고른 작품을 게시 제외하면 다른
+                작품으로 교체해야 합니다. 게시 제외는 원본 파일을 삭제하거나
+                직접 파일 주소까지 비공개로 만드는 기능이 아닙니다.
               </p>
               <div className={styles.links}>
                 <a

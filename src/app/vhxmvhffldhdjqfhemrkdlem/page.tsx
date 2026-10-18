@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import AdminWorkspace from "@/components/admin/AdminWorkspace";
-import { getPortfolioCatalog } from "@/lib/portfolioCatalog";
+import { getPortfolioManagement } from "@/lib/portfolioManagement";
 
 export const metadata: Metadata = {
   title: "포트폴리오 편집기 - JiD",
@@ -23,5 +23,6 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPage() {
-  return <AdminWorkspace projects={getPortfolioCatalog()} />;
+  const management = getPortfolioManagement();
+  return <AdminWorkspace projects={management.allProjects} initialSettings={management.settings} />;
 }

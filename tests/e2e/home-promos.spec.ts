@@ -6,7 +6,7 @@ const featuredIds = ["jd025_c", "jd008_b", "jd005_b", "jd013"];
 
 test("home cards show four real portfolio projects with working images", async ({ page }) => {
   await page.goto(`${basePath}/`);
-  const cards = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true });
+  const cards = page.getByRole("region", { name: "대표 프로젝트", exact: true });
   await expect(cards.getByRole("link")).toHaveCount(4);
   expect(await cards.getByRole("link").evaluateAll((links) => links.map((link) => link.getAttribute("href")))).toEqual(
     featuredIds.map((id) => `${basePath}/portfolio/${id}/`),
@@ -42,11 +42,11 @@ for (const width of [320, 390, 1440]) {
       await page.goto(`${basePath}/`);
       if (theme === "dark") await page.getByRole("button", { name: "다크 모드로 전환", exact: true }).click();
       await expect.poll(() => page.locator("html").evaluate((element) => element.classList.contains("dark"))).toBe(theme === "dark");
-      const grid = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true });
+      const grid = page.getByRole("region", { name: "대표 프로젝트", exact: true });
       await expect(grid.getByRole("link")).toHaveCount(4);
       for (const id of featuredIds) {
         const project = portfolioData.find((item) => item.id === id)!;
-        const card = grid.getByRole("link", { name: `${project.title} 3D 모델 보기`, exact: true });
+        const card = grid.getByRole("link", { name: `${project.title} 프로젝트 보기`, exact: true });
         await card.scrollIntoViewIfNeeded();
         await page.mouse.move(0, 0);
         const image = card.getByRole("img", { name: project.title, exact: true });
@@ -83,7 +83,7 @@ test("a full-image featured card still navigates to its unchanged project detail
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`${basePath}/`);
   const project = portfolioData.find((item) => item.id === "jd025_c")!;
-  const card = page.getByRole("region", { name: "3D 모델이 있는 대표 프로젝트", exact: true }).getByRole("link", { name: `${project.title} 3D 모델 보기`, exact: true });
+  const card = page.getByRole("region", { name: "대표 프로젝트", exact: true }).getByRole("link", { name: `${project.title} 프로젝트 보기`, exact: true });
   await card.click();
   await expect(page).toHaveURL(new RegExp(`${basePath}/portfolio/jd025_c/?$`));
   await expect(page.getByRole("heading", { level: 1, name: project.title, exact: true })).toBeVisible();

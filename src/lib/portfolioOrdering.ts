@@ -5,12 +5,13 @@ import { getProjectModelPaths } from "./portfolioModels";
 // Server/build-only: the client receives the ordered metadata, never filesystem code.
 export function sortPortfolioProjects<T extends { id: string; folder?: string }>(
   projects: readonly T[],
+  root = process.cwd(),
 ): T[] {
   return projects
     .map((project, index) => {
-      const models = getProjectModelPaths(project.folder || project.id);
+      const models = getProjectModelPaths(project.folder || project.id, root);
       const bytes = models.reduce(
-        (total, model) => total + fs.statSync(path.join(process.cwd(), "public", model)).size,
+        (total, model) => total + fs.statSync(path.join(root, "public", model)).size,
         0,
       );
       return { project, index, count: models.length, bytes };

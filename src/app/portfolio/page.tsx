@@ -1,6 +1,5 @@
 import PortfolioGrid from "@/components/portfolio/PortfolioGrid";
-import { getPortfolioCatalog } from "@/lib/portfolioCatalog";
-import { sortPortfolioProjects } from "@/lib/portfolioOrdering";
+import { getPortfolioManagement } from "@/lib/portfolioManagement";
 
 export const metadata = {
   title: "Portfolio - JiD",
@@ -8,9 +7,10 @@ export const metadata = {
 };
 
 export default function PortfolioPage() {
+  const { projects } = getPortfolioManagement();
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] dark:bg-[#111111]">
-      <PortfolioGrid projects={sortPortfolioProjects(getPortfolioCatalog())} />
+      <PortfolioGrid projects={projects} />
     </div>
   );
 }

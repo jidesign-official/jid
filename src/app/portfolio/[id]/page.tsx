@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPortfolioCatalog } from "@/lib/portfolioCatalog";
+import { getPortfolioManagement } from "@/lib/portfolioManagement";
 import { getAdminProject } from "@/lib/adminProjects";
 import PortfolioBody from "@/components/portfolio/PortfolioBody";
 import DetailGalleryView from "@/components/portfolio/DetailGalleryView";
@@ -8,18 +8,17 @@ import Model3DViewer from "@/components/portfolio/Model3DViewer";
 import { getAssetPath } from "@/lib/basePath";
 import { getProjectModelPaths } from "@/lib/portfolioModels";
 import { getProjectDetailImages } from "@/lib/portfolioImages";
-import { sortPortfolioProjects } from "@/lib/portfolioOrdering";
 import { pickPortfolioTagline } from "@/lib/portfolioTaglines";
 
 export async function generateStaticParams() {
-  return getPortfolioCatalog().map((item) => ({
+  return getPortfolioManagement().projects.map((item) => ({
     id: item.id,
   }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const project = getPortfolioCatalog().find((p) => p.id === resolvedParams.id);
+  const project = getPortfolioManagement().projects.find((p) => p.id === resolvedParams.id);
   if (!project) return { title: "Project Not Found - JiD" };
 
   return {
@@ -34,7 +33,7 @@ export default async function PortfolioDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = await params;
-  const projects = sortPortfolioProjects(getPortfolioCatalog());
+  const { projects } = getPortfolioManagement();
   const currentIndex = projects.findIndex((p) => p.id === resolvedParams.id);
 
   if (currentIndex === -1) {

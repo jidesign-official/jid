@@ -14,6 +14,7 @@ import { pickPortfolioTagline } from "../../src/lib/portfolioTaglines";
 import expectedTitles from "./fixtures/portfolio-titles.json";
 import { getPortfolioCatalog } from "../../src/lib/portfolioCatalog";
 import { getAdminProject } from "../../src/lib/adminProjects";
+import { getPortfolioManagement } from "../../src/lib/portfolioManagement";
 
 // Execute the real server-page selection without importing client-only CSS/GSAP.
 // Client children are not rendered: their props expose the selected projects.
@@ -33,6 +34,7 @@ function homeProjectIds(): string[] {
       if (id === "@/lib/portfolioModels") return { getProjectModelPath };
       if (id.endsWith("portfolio_data.json")) return portfolioData;
       if (id === "@/lib/portfolioCatalog") return { getPortfolioCatalog };
+      if (id === "@/lib/portfolioManagement") return { getPortfolioManagement };
       if (id === "@/components/home/Hero" || id === "@/components/home/PromoGrid") return () => null;
       throw new Error(`Unexpected home-page dependency: ${id}`);
     },
@@ -71,6 +73,7 @@ async function detailViewers(id: string) {
       if (dependency === "@/lib/basePath") return { getAssetPath: (assetPath: string) => assetPath };
       if (dependency.endsWith("portfolio_data.json")) return portfolioData;
       if (dependency === "@/lib/portfolioCatalog") return { getPortfolioCatalog };
+      if (dependency === "@/lib/portfolioManagement") return { getPortfolioManagement };
       if (dependency === "@/lib/adminProjects") return { getAdminProject };
       if (dependency === "@/components/portfolio/Model3DViewer") return ModelViewer;
       if (dependency === "next/link" || dependency === "@/components/portfolio/DetailGalleryView" || dependency === "@/components/portfolio/PortfolioBody") return () => null;
@@ -125,15 +128,15 @@ test("model routing returns no assets for a missing web asset without a legacy f
   });
 });
 
-test("home featured projects resolve web assets even without legacy GLBs", () => {
+test("home featured projects keep the current four even without legacy GLBs", () => {
   withAssetAvailability((assetPath) => assetPath.includes(`${path.sep}images${path.sep}glb${path.sep}`), () => {
     expect(homeProjectIds()).toEqual(["jd025_c", "jd008_b", "jd005_b", "jd013"]);
   });
 });
 
-test("home featured projects omit a missing web asset despite existing legacy GLBs", () => {
+test("home featured projects do not require a web asset because image-only choices are eligible", () => {
   withAssetAvailability((assetPath) => !assetPath.endsWith("jd005_b_web.glb"), () => {
-    expect(homeProjectIds()).toEqual(["jd025_c", "jd008_b", "jd013"]);
+    expect(homeProjectIds()).toEqual(["jd025_c", "jd008_b", "jd005_b", "jd013"]);
   });
 });
 

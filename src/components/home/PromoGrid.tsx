@@ -40,13 +40,13 @@ export default function PromoGrid({ projects }: { projects: FeaturedProject[] })
   }, { scope: containerRef, dependencies: [projects] });
 
   return (
-    <section ref={containerRef} aria-label="3D 모델이 있는 대표 프로젝트" className="relative isolate w-full max-w-[1440px] mx-auto px-4 py-4 md:py-8">
+    <section ref={containerRef} aria-label="대표 프로젝트" className="relative isolate w-full max-w-[1440px] mx-auto px-4 py-4 md:py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {projects.map((project, index) => (
           <Link
             key={project.id}
             href={`/portfolio/${project.id}/`}
-            aria-label={`${project.title} 3D 모델 보기`}
+            aria-label={`${project.title} 프로젝트 보기`}
             ref={(element) => { cardsRef.current[index] = element; }}
             className="group relative h-[500px] md:h-[580px] overflow-hidden rounded-[5px] bg-[#F5F5F7] dark:bg-[#1C1C1E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066CC]"
           >

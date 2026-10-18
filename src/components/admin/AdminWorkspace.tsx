@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import dynamic from "next/dynamic";
 import PortfolioBody from "@/components/portfolio/PortfolioBody";
 import UploadManual from "./UploadManual";
+import PortfolioManager from "./PortfolioManager";
+import type { PortfolioSettings } from "@/lib/portfolioSettings";
 import { getAssetPath } from "@/lib/basePath";
 import type {
   AdminBlock,
@@ -99,10 +101,13 @@ type UploadTarget =
 
 export default function AdminWorkspace({
   projects,
+  initialSettings,
 }: {
   projects: AdminCatalogProject[];
+  initialSettings: PortfolioSettings;
 }) {
   const [tab, setTab] = useState<Tab>("editor");
+  const [catalogDirty, setCatalogDirty] = useState(false);
   const [data, setData] = useState<PackageData>(() => initialData(projects));
   const [dirty, setDirty] = useState(false),
     [busy, setBusy] = useState(false),
@@ -113,8 +118,7 @@ export default function AdminWorkspace({
   const [drafts, setDrafts] = useState<DraftSummary[]>([]),
     [draftError, setDraftError] = useState(""),
     [draftLoading, setDraftLoading] = useState(true);
-  const [preview, setPreview] = useState(false),
-    [query, setQuery] = useState("");
+  const [preview, setPreview] = useState(false);
   const [urls, setUrls] = useState<Record<string, string>>(
     () => Object.create(null) as Record<string, string>,
   );
@@ -125,8 +129,8 @@ export default function AdminWorkspace({
     dirtyRef = useRef(dirty),
     busyLock = useRef(false);
   useEffect(() => {
-    dirtyRef.current = dirty;
-  }, [dirty]);
+    dirtyRef.current = dirty || catalogDirty;
+  }, [dirty, catalogDirty]);
   const legacyIds = useMemo(() => legacyProjects.map((p) => p.id), []);
   const manifest = data.manifest;
   const filenamePrefix = /^jd\d{3}(?:_[a-z]+)?$/.test(manifest.project.id)
@@ -510,7 +514,7 @@ export default function AdminWorkspace({
             <span className={styles.localState}>
               {busy
                 ? "● 처리 중…"
-                : dirty
+                : dirty || catalogDirty
                   ? "● 저장하지 않은 변경"
                   : "○ 로컬 작업 공간"}
             </span>
@@ -1303,82 +1307,13 @@ export default function AdminWorkspace({
               )}
             </>
           )}
-          {tab === "catalog" && (
-            <>
-              <section className={styles.pageHeading}>
-                <div>
-                  <span className={styles.eyebrow}>PUBLISHED WORK</span>
-                  <h1>
-                    프로젝트 목록<span>.</span>
-                  </h1>
-                  <p>
-                    현재 카탈로그 {projects.length}개 · 이 목록에서는 읽기만
-                    가능합니다.
-                  </p>
-                </div>
-              </section>
-              <div className={styles.infoCard}>
-                <h2>기존 작품은 안전하게, 새 작품은 ZIP으로</h2>
-                <p>
-                  첫 버전에서 레거시 프로젝트는 읽기 전용입니다. CMS 프로젝트를
-                  수정하려면 원본 ZIP을 가져오고 편집한 뒤 같은 파일명으로
-                  GitHub에서 교체하세요. 목록에서 기존 파일을 직접 수정하거나
-                  삭제하지 않습니다.
-                </p>
-              </div>
-              <label className={styles.search}>
-                프로젝트 검색
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="이름 또는 ID로 검색"
-                />
-              </label>
-              <div className={styles.catalogGrid}>
-                {projects
-                  .filter((p) =>
-                    `${p.title} ${p.id}`
-                      .toLowerCase()
-                      .includes(query.toLowerCase()),
-                  )
-                  .map((project) => (
-                    <a
-                      className={styles.catalogItem}
-                      key={project.id}
-                      href={getAssetPath(`/portfolio/${project.id}/`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <div className={styles.catalogImage}>
-                        <img
-                          src={getAssetPath(project.image)}
-                          alt=""
-                          loading="lazy"
-                        />
-                      </div>
-                      <div>
-                        <span>
-                          {project.id} · {project.category}
-                        </span>
-                        <h2>{project.title}</h2>
-                        <small>
-                          {project.image.includes("/_admin_media/")
-                            ? "CMS · 원본 ZIP으로 수정"
-                            : "레거시 · 읽기 전용"}{" "}
-                          ↗
-                        </small>
-                      </div>
-                    </a>
-                  ))}
-              </div>
-              {!projects.some((p) =>
-                `${p.title} ${p.id}`
-                  .toLowerCase()
-                  .includes(query.toLowerCase()),
-              ) && <p className={styles.empty}>검색 결과가 없습니다.</p>}
-            </>
-          )}
+          <div hidden={tab !== "catalog"}>
+            <PortfolioManager
+              projects={projects}
+              initialSettings={initialSettings}
+              onDirtyChange={setCatalogDirty}
+            />
+          </div>
           {tab === "publish" && (
             <>
               <section className={styles.pageHeading}>
@@ -1444,6 +1379,8 @@ export default function AdminWorkspace({
                 <p>
                   같은 ID의 ZIP을 교체하면 CMS 프로젝트가 업데이트됩니다. ZIP을
                   저장소에서 삭제하고 배포하면 해당 CMS 프로젝트가 제거됩니다.
+                  관리 설정에서 해당 ID를 참조한다면 그 참조도 함께 정리해야 합니다.
+                  일반적인 노출 중단은 프로젝트 목록의 게시 제외/복원을 사용하세요.
                   기존 레거시 프로젝트 ID는 사용할 수 없습니다. ZIP은 25MiB,
                   압축 해제 50MiB, 에셋 60개, 블록 100개 이내여야 합니다.
                 </p>

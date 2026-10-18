@@ -32,6 +32,9 @@ function load(
     {
       exports,
       process,
+      Buffer,
+      TextEncoder,
+      TextDecoder,
       require: (id: string) => {
         if (Object.hasOwn(dependencies, id)) return dependencies[id];
         if (id.startsWith("node:")) return nativeRequire(id);
@@ -508,40 +511,54 @@ const metadata = () => {
   const { id, folder, title, category, image } = project();
   return { id, folder, title, category, image };
 };
-const pageDependencies = () => ({
-  "next/link": component("a"),
-  "next/navigation": {
-    notFound: () => {
-      throw new Error("not found");
+function pageDependencies() {
+  const dependencies = {
+    "next/link": component("a"),
+    "next/navigation": {
+      notFound: () => {
+        throw new Error("not found");
+      },
     },
-  },
-  "@/components/portfolio/PortfolioBody": component("cms-body"),
-  "@/components/portfolio/DetailGalleryView": component("legacy-gallery"),
-  "@/components/portfolio/Model3DViewer": component("model-viewer"),
-  "@/components/portfolio/PortfolioGrid": component("portfolio-grid"),
-  "@/components/home/Hero": component("hero"),
-  "@/components/home/PromoGrid": component("promo-grid"),
-  "@/lib/portfolioCatalog": {
-    getPortfolioCatalog: () => [...legacy, metadata()],
-  },
-  "@/lib/adminProjects": {
-    getAdminProject: (id: string) => (id === "jd046" ? project() : undefined),
-  },
-  "@/lib/portfolioModels": {
-    getProjectModelPaths: (): string[] => [],
-    getProjectModelPath: () => "/images/glb/model.glb",
-  },
-  "@/lib/portfolioImages": {
-    getProjectDetailImages: () => [
-      { filename: "jd038_1.png", src: "/one.png" },
-      { filename: "jd038_2.jpg", src: "/two.jpg" },
-    ],
-  },
-  "@/lib/portfolioOrdering": {
-    sortPortfolioProjects: (projects: unknown[]) => [...projects],
-  },
-  "@/lib/portfolioTaglines": { pickPortfolioTagline: () => "tagline" },
-});
+    "@/components/portfolio/PortfolioBody": component("cms-body"),
+    "@/components/portfolio/DetailGalleryView": component("legacy-gallery"),
+    "@/components/portfolio/Model3DViewer": component("model-viewer"),
+    "@/components/portfolio/PortfolioGrid": component("portfolio-grid"),
+    "@/components/home/Hero": component("hero"),
+    "@/components/home/PromoGrid": component("promo-grid"),
+    "@/lib/portfolioCatalog": {
+      getPortfolioCatalog: () => [...legacy, metadata()],
+    },
+    "@/lib/adminProjects": {
+      getAdminProject: (id: string) => (id === "jd046" ? project() : undefined),
+    },
+    "@/lib/portfolioModels": {
+      getProjectModelPaths: (): string[] => [],
+      getProjectModelPath: () => "/images/glb/model.glb",
+    },
+    "@/lib/portfolioImages": {
+      getProjectDetailImages: () => [
+        { filename: "jd038_1.png", src: "/one.png" },
+        { filename: "jd038_2.jpg", src: "/two.jpg" },
+      ],
+    },
+    "@/lib/portfolioOrdering": {
+      sortPortfolioProjects: (projects: unknown[]) => [...projects],
+    },
+    "@/lib/portfolioTaglines": { pickPortfolioTagline: () => "tagline" },
+  };
+  return Object.assign(dependencies, {
+    "@/lib/portfolioManagement": {
+      getPortfolioManagement: () => {
+        const api = load("src/lib/portfolioManagement.ts", {
+          ...dependencies,
+          "./portfolioCatalog": dependencies["@/lib/portfolioCatalog"],
+          "./portfolioOrdering": dependencies["@/lib/portfolioOrdering"],
+        });
+        return (api.getPortfolioManagement as () => unknown)();
+      },
+    },
+  });
+}
 
 test("detail module registers CMS static params and metadata and renders CMS body instead of legacy gallery", async () => {
   const api = load("src/app/portfolio/[id]/page.tsx", pageDependencies());
