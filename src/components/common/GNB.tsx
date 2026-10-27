@@ -66,17 +66,29 @@ export default function GNB() {
           </button>
 
           <Link href="/" className="transition-opacity hover:opacity-70 z-50 relative flex items-center" aria-label="홈">
-            {/* Light mode logo */}
-            <img 
-              src={getAssetPath("/logo.png")} 
+            {/* Desktop light-mode logo */}
+            <img
+              src={getAssetPath("/logo.png")}
               alt="JiD"
-              className="dark:hidden h-7 md:h-8 w-auto object-contain"
+              className="hidden md:block dark:hidden h-8 w-auto object-contain"
             />
-            {/* Dark mode logo */}
-            <img 
-              src={getAssetPath("/logo_dark.png")} 
+            {/* Desktop dark-mode logo */}
+            <img
+              src={getAssetPath("/logo_dark.png")}
               alt="JiD"
-              className="hidden dark:block h-7 md:h-8 w-auto object-contain"
+              className="hidden md:dark:block h-8 w-auto object-contain"
+            />
+            {/* Mobile light-mode logo */}
+            <img
+              src={getAssetPath("/logo_mobile.png")}
+              alt="JiD"
+              className="md:hidden dark:hidden h-[18px] w-auto object-contain"
+            />
+            {/* Mobile dark-mode logo */}
+            <img
+              src={getAssetPath("/logo_mobile_dark.png")}
+              alt="JiD"
+              className="hidden dark:block md:hidden md:dark:hidden h-[18px] w-auto object-contain"
             />
           </Link>
 

@@ -32,7 +32,7 @@ test.describe("route branding", () => {
       await expect.soft(page.locator('meta[name="description"]')).toHaveAttribute("content", route.description);
 
       const headerLogos = page.locator("header img");
-      await expect.soft(headerLogos).toHaveCount(2);
+      await expect.soft(headerLogos).toHaveCount(4);
       for (const logo of await headerLogos.all()) {
         await expect.soft(logo).toHaveAttribute("alt", "JiD");
       }
@@ -56,6 +56,21 @@ test.describe("route branding", () => {
     });
   }
 });
+
+test("responsive header uses the wide logo assets on mobile and compact assets on desktop", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${basePath}/`);
+  const visibleLogo = page.locator('header img[alt="JiD"]:visible');
+  await expect(visibleLogo).toHaveAttribute("src", `${basePath}/logo_mobile.png`);
+  await page.getByRole("button", { name: "다크 모드로 전환", exact: true }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(page.locator('header img[alt="JiD"]:visible')).toHaveAttribute("src", `${basePath}/logo_mobile_dark.png`);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const desktopLogo = page.locator('header img[alt="JiD"]:visible');
+  await expect(desktopLogo).toHaveCount(1);
+  await expect(desktopLogo).toHaveAttribute("src", `${basePath}/logo_dark.png`);
+});
+
 
 test("inquiry drafts use JiD without changing the receiver", () => {
   const draft = { name: "테스트", email: "test@example.com", message: "문의 내용", selectedTypes: [], selectedBudget: "" };
