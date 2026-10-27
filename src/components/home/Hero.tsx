@@ -15,7 +15,7 @@ export default function Hero() {
         className={styles.video}
         hidden={failed}
         src={getAssetPath("/images/home/jiD.mp4")}
-        poster={getAssetPath("/images/home/jiD-poster.jpg")}
+        poster={getAssetPath("/images/home/jiD-fallback.png")}
         muted
         playsInline
         preload="metadata"
@@ -26,7 +26,7 @@ export default function Hero() {
       </video>
       {failed && (
         <Image
-          src={getAssetPath("/images/home/jiD-poster.jpg")}
+          src={getAssetPath("/images/home/jiD-fallback.png")}
           alt=""
           aria-hidden="true"
           fill
@@ -38,9 +38,6 @@ export default function Hero() {
       <div className={styles.shade} aria-hidden="true" />
       <div className={styles.overlay}>
         <div className={styles.content}>
-          <h1 className={styles.title} lang="en">
-            <span>Turning <strong>imagination</strong> into <strong>reality</strong></span>
-          </h1>
           {failed && <p role="status" className={styles.fallback}>영상을 재생할 수 없어 미리보기 이미지를 표시합니다.</p>}
         </div>
         <button

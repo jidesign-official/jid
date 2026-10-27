@@ -30,30 +30,19 @@
 
 .content {
   position: absolute;
-  left: clamp(24px, 6vw, 96px);
-  right: clamp(24px, 6vw, 96px);
-  bottom: clamp(76px, 6vw, 108px);
-  text-align: center;
-}
-
-.title {
-  margin: 0;
-  font-size: clamp(28px, 4.4vw, 64px);
-  font-weight: 300;
-  line-height: 1.2;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-  text-shadow: 0 2px 16px rgb(0 0 0 / 24%);
-}
-
-.title strong {
-  font-weight: 600;
+  inset: 0;
+  pointer-events: none;
 }
 
 .fallback {
-  margin-top: 12px;
+  position: absolute;
+  left: clamp(24px, 6vw, 96px);
+  right: clamp(24px, 6vw, 96px);
+  bottom: clamp(76px, 6vw, 108px);
+  margin: 0;
   font-size: 14px;
   line-height: 1.5;
+  text-align: center;
 }
 
 .control {
@@ -95,39 +84,15 @@
     min-height: 0;
   }
 
-  .overlay {
-    /* Symmetric gutters keep the slogan centered and clear of the icon. */
-    position: absolute;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto;
+  .fallback {
     left: 64px;
     right: 64px;
     bottom: 20px;
-  }
-
-  .content {
-    display: contents;
-  }
-
-  .title {
-    grid-area: 1 / 1;
-    font-size: clamp(18px, 5vw, 20px);
-    text-align: center;
-  }
-
-  .fallback {
-    grid-area: 2 / 1;
     text-align: center;
   }
 
   .control {
-    /* Absolute grid placement aligns the icon with the title, not the status.
-       Keep its 44px hit area without increasing the title's bottom inset. */
-    grid-area: 1 / 1 / 2 / 2;
-    top: 50%;
-    right: -52px;
-    bottom: auto;
-    transform: translateY(-50%);
+    right: 12px;
+    bottom: 16px;
   }
 }
