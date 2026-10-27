@@ -9,17 +9,49 @@ test.describe("JiD E2E Tests", () => {
     await expect(page.locator("nav")).toBeVisible();
   });
 
-  test("Portfolio list page displays tab filters and products", async ({ page }) => {
-    await page.goto(`${basePath}/portfolio`);
-    
-    // Check tabs
-    const allProjectsTab = page.getByRole("button", { name: /모든 프로젝트/i });
-    await expect(allProjectsTab).toBeVisible();
+  test("portfolio cards use equal grid gaps and reveal titles with a bounded hover treatment", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${basePath}/portfolio/`);
 
-    // Check product cards
-    const productCards = page.locator(`a[href^="${basePath}/portfolio/jd"]`);
-    await expect(productCards.first()).toBeVisible();
+    const grid = page.locator("[data-portfolio-grid]");
+    const card = grid.locator('a[href^="/portfolio/jd"]').first();
+    const image = card.locator("img");
+    const overlay = card.locator("div.absolute.inset-0");
+
+    await expect(card).toBeVisible();
+    await expect(card.locator("h3")).toHaveText(/.+/);
+    await expect.poll(() => card.evaluate((element) => {
+      const transform = new DOMMatrix(getComputedStyle(element).transform);
+      return Math.abs(transform.m42);
+    })).toBeLessThan(0.1);
+    const initialState = await page.evaluate(() => {
+      const grid = document.querySelector<HTMLElement>("[data-portfolio-grid]")!;
+      const overlay = document.querySelector<HTMLElement>("[data-portfolio-grid] div.absolute.inset-0")!;
+      return {
+        columnGap: getComputedStyle(grid).columnGap,
+        rowGap: getComputedStyle(grid).rowGap,
+        overlayOpacity: getComputedStyle(overlay).opacity,
+      };
+    });
+    expect(initialState.columnGap).toBe(initialState.rowGap);
+    expect(initialState.overlayOpacity).toBe("0");
+
+    const before = await card.boundingBox();
+    await card.hover();
+    await expect.poll(() => overlay.evaluate((element) => getComputedStyle(element).opacity)).toBe("1");
+    const hoveredState = await image.evaluate((element) => ({
+      scale: getComputedStyle(element).scale,
+      filter: getComputedStyle(element).filter,
+    }));
+    expect(hoveredState.scale).toBe("1.05");
+    expect(hoveredState.filter).toContain("blur");
+    const after = await card.boundingBox();
+    expect(after).not.toBeNull();
+    expect(before).not.toBeNull();
+    expect(after!.width).toBeCloseTo(before!.width, 1);
+    expect(after!.height).toBeCloseTo(before!.height, 1);
   });
+
 
   test("Portfolio detail page loads and lightbox opens on image click", async ({ page }) => {
     await page.goto(`${basePath}/portfolio/jd001`);

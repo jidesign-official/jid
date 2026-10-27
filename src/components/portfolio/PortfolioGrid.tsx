@@ -82,29 +82,36 @@ export default function PortfolioGrid({ projects }: { projects: readonly Portfol
           </div>
         </div>
 
-        {/* 4열 그리드 (가로 간격 24px, 세로 간격 48px) */}
-        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-[24px] gap-y-[48px]">
+        {/* 4열 그리드: 세로 간격(48px)을 가로에도 적용 */}
+        <div
+          ref={gridRef}
+          data-portfolio-grid
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12"
+        >
           {currentProducts.map((product) => (
-            <Link 
-              key={product.id} 
+            <Link
+              key={product.id}
               href={`/portfolio/${product.id}`}
-              className="flex flex-col items-center text-center group cursor-pointer"
+              className="group relative block w-full cursor-pointer rounded-[5px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0066CC]"
             >
-              
-              {/* 상단 이미지 카드 (테두리 제거, 5px radius, white 배경) */}
-              <div className="w-full aspect-square rounded-[5px] overflow-hidden flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.02] bg-[#ffffff]">
-                <img 
-                  src={getAssetPath(product.image)} 
-                  alt={product.title} 
-                  className="w-full h-full object-contain bg-[#ffffff] rounded-[5px]"
+              {/* 이미지 크기는 유지하고 내부 이미지만 확대·블러 처리 */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-[5px] bg-[#ffffff]">
+                <img
+                  src={getAssetPath(product.image)}
+                  alt={product.title}
+                  className="h-full w-full rounded-[5px] bg-[#ffffff] object-contain transition-[transform,filter] duration-500 ease-apple motion-reduce:transition-none group-hover:scale-105 group-hover:blur-[3px]"
                 />
-              </div>
 
-              {/* 텍스트 영역 (타이틀만 표시) */}
-              <h3 className="mt-3.5 text-[21px] font-[300] text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight group-hover:text-[#0066CC] transition-colors duration-300 font-product">
-                {product.title}
-              </h3>
-              
+                {/* 마우스 오버/키보드 포커스 시에만 제목 표시 */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#666666]/90 px-6 text-center opacity-0 transition-opacity duration-500 ease-apple motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  <h3 className="font-product text-[21px] font-[300] leading-tight tracking-tight text-white">
+                    {product.title}
+                  </h3>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
