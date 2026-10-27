@@ -47,6 +47,8 @@ test.describe("JiD E2E Tests", () => {
     }));
     expect(hoveredState.scale).toBe("2");
     expect(hoveredState.filter).toContain("blur(8px)");
+    const titleWeight = await overlay.locator("h3").evaluate((element) => getComputedStyle(element).fontWeight);
+    expect(titleWeight).toBe("900");
     const after = await card.boundingBox();
     expect(after).not.toBeNull();
     expect(before).not.toBeNull();

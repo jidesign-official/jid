@@ -107,7 +107,7 @@ export default function PortfolioGrid({ projects }: { projects: readonly Portfol
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#666666]/90 px-6 text-center opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
                 >
-                  <h3 className="font-product text-[21px] font-[700] leading-tight tracking-tight text-white">
+                  <h3 className="font-product text-[21px] !font-black leading-tight tracking-tight text-white">
                     {product.title}
                   </h3>
                 </div>
