@@ -33,6 +33,8 @@ test.describe("JiD E2E Tests", () => {
         overlayOpacity: getComputedStyle(overlay).opacity,
       };
     });
+    expect(initialState.columnGap).toBe("30px");
+    expect(initialState.rowGap).toBe("30px");
     expect(initialState.columnGap).toBe(initialState.rowGap);
     expect(initialState.overlayOpacity).toBe("0");
 
@@ -43,8 +45,8 @@ test.describe("JiD E2E Tests", () => {
       scale: getComputedStyle(element).scale,
       filter: getComputedStyle(element).filter,
     }));
-    expect(hoveredState.scale).toBe("1.05");
-    expect(hoveredState.filter).toContain("blur");
+    expect(hoveredState.scale).toBe("2");
+    expect(hoveredState.filter).toContain("blur(8px)");
     const after = await card.boundingBox();
     expect(after).not.toBeNull();
     expect(before).not.toBeNull();

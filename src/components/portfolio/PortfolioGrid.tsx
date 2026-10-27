@@ -82,11 +82,11 @@ export default function PortfolioGrid({ projects }: { projects: readonly Portfol
           </div>
         </div>
 
-        {/* 4열 그리드: 세로 간격(48px)을 가로에도 적용 */}
+        {/* 4열 그리드: 썸네일 사이 간격을 30px로 통일 */}
         <div
           ref={gridRef}
           data-portfolio-grid
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[30px]"
         >
           {currentProducts.map((product) => (
             <Link
@@ -99,15 +99,15 @@ export default function PortfolioGrid({ projects }: { projects: readonly Portfol
                 <img
                   src={getAssetPath(product.image)}
                   alt={product.title}
-                  className="h-full w-full rounded-[5px] bg-[#ffffff] object-contain transition-[transform,filter] duration-500 ease-apple motion-reduce:transition-none group-hover:scale-105 group-hover:blur-[3px]"
+                  className="h-full w-full rounded-[5px] bg-[#ffffff] object-contain transition-[scale,filter] duration-200 ease-out motion-reduce:transition-none group-hover:scale-[2] group-hover:blur-[8px]"
                 />
 
                 {/* 마우스 오버/키보드 포커스 시에만 제목 표시 */}
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#666666]/90 px-6 text-center opacity-0 transition-opacity duration-500 ease-apple motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#666666]/90 px-6 text-center opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
                 >
-                  <h3 className="font-product text-[21px] font-[300] leading-tight tracking-tight text-white">
+                  <h3 className="font-product text-[21px] font-[700] leading-tight tracking-tight text-white">
                     {product.title}
                   </h3>
                 </div>
