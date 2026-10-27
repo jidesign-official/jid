@@ -99,13 +99,13 @@ export default function PortfolioGrid({ projects }: { projects: readonly Portfol
                 <img
                   src={getAssetPath(product.image)}
                   alt={product.title}
-                  className="h-full w-full rounded-[5px] bg-[#ffffff] object-contain transition-[scale,filter] duration-200 ease-out motion-reduce:transition-none group-hover:scale-[2] group-hover:blur-[8px]"
+                  className="h-full w-full rounded-[5px] bg-[#ffffff] object-contain transition-[scale,filter] duration-200 ease-out motion-reduce:transition-none group-hover:scale-105 group-hover:blur-[3px]"
                 />
 
                 {/* 마우스 오버/키보드 포커스 시에만 제목 표시 */}
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#666666]/90 px-6 text-center opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#666666]/60 px-6 text-center opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
                 >
                   <h3 className="font-product text-[21px] !font-black leading-tight tracking-tight text-white">
                     {product.title}

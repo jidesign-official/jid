@@ -45,8 +45,8 @@ test.describe("JiD E2E Tests", () => {
       scale: getComputedStyle(element).scale,
       filter: getComputedStyle(element).filter,
     }));
-    expect(hoveredState.scale).toBe("2");
-    expect(hoveredState.filter).toContain("blur(8px)");
+    expect(hoveredState.scale).toBe("1.05");
+    expect(hoveredState.filter).toContain("blur(3px)");
     const titleWeight = await overlay.locator("h3").evaluate((element) => getComputedStyle(element).fontWeight);
     expect(titleWeight).toBe("900");
     const after = await card.boundingBox();
