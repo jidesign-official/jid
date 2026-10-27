@@ -14,10 +14,9 @@ export default function Hero() {
         ref={videoRef}
         className={styles.video}
         hidden={failed}
-        src={getAssetPath("/images/home/intro.webm")}
-        poster={getAssetPath("/images/home/intro-poster.jpg")}
+        src={getAssetPath("/images/home/jiD.mp4")}
+        poster={getAssetPath("/images/home/jiD-poster.jpg")}
         muted
-        loop
         playsInline
         preload="metadata"
         aria-hidden="true"
@@ -27,7 +26,7 @@ export default function Hero() {
       </video>
       {failed && (
         <Image
-          src={getAssetPath("/images/home/intro-poster.jpg")}
+          src={getAssetPath("/images/home/jiD-poster.jpg")}
           alt=""
           aria-hidden="true"
           fill

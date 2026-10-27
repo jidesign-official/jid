@@ -32,6 +32,13 @@ export function useHeroVideo() {
       }
     };
     const playbackChanged = () => { if (!disposed) setPlaying(!video.paused); };
+    const ended = () => {
+      if (disposed) return;
+      // Keep the final frame visible and prevent visibility changes from
+      // restarting a non-looping hero video after it has finished.
+      wantedRef.current = false;
+      setPlaying(false);
+    };
     const error = () => {
       hasError = true;
       video.pause();
@@ -45,6 +52,7 @@ export function useHeroVideo() {
     observer.observe(video);
     video.addEventListener("play", playbackChanged);
     video.addEventListener("pause", playbackChanged);
+    video.addEventListener("ended", ended);
     video.addEventListener("error", error);
     motion.addEventListener("change", motionChanged);
     document.addEventListener("visibilitychange", sync);
@@ -58,6 +66,7 @@ export function useHeroVideo() {
       observer.disconnect();
       video.removeEventListener("play", playbackChanged);
       video.removeEventListener("pause", playbackChanged);
+      video.removeEventListener("ended", ended);
       video.removeEventListener("error", error);
       motion.removeEventListener("change", motionChanged);
       document.removeEventListener("visibilitychange", sync);

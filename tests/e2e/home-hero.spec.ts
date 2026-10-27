@@ -9,15 +9,32 @@ test("hero plays the supplied muted inline video behind the new headline", async
   const hero = page.getByRole("region", { name: "JiD 소개 영상" });
   await expect(hero.getByRole("heading", { name: "Turning imagination into reality", exact: true })).toBeVisible();
   const video = hero.locator("video");
-  await expect(video).toHaveAttribute("src", `${basePath}/images/home/intro.webm`);
-  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState >= 2 && v.videoWidth === 1920 && v.muted && v.loop && v.playsInline && !v.paused), { timeout: 15_000 }).toBe(true);
+  await expect(video).toHaveAttribute("src", `${basePath}/images/home/jiD.mp4`);
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState >= 2 && v.videoWidth === 1920 && v.muted && !v.loop && v.playsInline && !v.paused), { timeout: 15_000 }).toBe(true);
   const initial = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime), { timeout: 10_000 }).toBeGreaterThan(initial + 0.1);
-  const response = await request.get(`${basePath}/images/home/intro.webm`);
+  const response = await request.get(`${basePath}/images/home/jiD.mp4`);
   expect(response.status()).toBe(200);
-  expect(await response.body()).toEqual(fs.readFileSync("public/images/home/intro.webm"));
+  expect(await response.body()).toEqual(fs.readFileSync("public/images/home/jiD.mp4"));
   await expect(page.locator(".pin-spacer")).toHaveCount(0);
   await expect(hero.getByRole("button", { name: "영상 일시 정지" })).toBeVisible();
+});
+
+test("hero video stops on its final frame instead of looping", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto(`${basePath}/`);
+  const video = page.locator("main video");
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState >= 2 && v.duration > 0 && !v.loop), { timeout: 15_000 }).toBe(true);
+  await video.evaluate((v: HTMLVideoElement) => {
+    v.currentTime = Math.max(0, v.duration - 0.2);
+    void v.play();
+  });
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.ended && v.paused), { timeout: 5_000 }).toBe(true);
+  const finalTime = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
+  await page.waitForTimeout(300);
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeGreaterThanOrEqual(finalTime - 0.05);
+  await expect(video).toHaveJSProperty("loop", false);
+  await expect(page.getByRole("button", { name: "영상 재생", exact: true })).toBeVisible();
 });
 
 test("video playback can be paused and resumed", async ({ page }) => {
@@ -70,8 +87,8 @@ test("video error after playback shows the decoded poster instead of the last fr
 
   const poster = hero.locator("img");
   await expect(poster).toBeVisible();
-  await expect(poster).toHaveAttribute("src", `${basePath}/images/home/intro-poster.jpg`);
-  const expectedUrl = new URL(`${basePath}/images/home/intro-poster.jpg`, page.url()).href;
+  await expect(poster).toHaveAttribute("src", `${basePath}/images/home/jiD-poster.jpg`);
+  const expectedUrl = new URL(`${basePath}/images/home/jiD-poster.jpg`, page.url()).href;
   await expect(poster.evaluate(async (img: HTMLImageElement) => {
     await img.decode();
     return { complete: img.complete, width: img.naturalWidth, height: img.naturalHeight, url: img.currentSrc };
@@ -83,7 +100,7 @@ test("video error after playback shows the decoded poster instead of the last fr
 });
 
 test("failed video retains headline and an accessible poster fallback", async ({ page }) => {
-  await page.route("**/images/home/intro.webm", (route) => route.fulfill({ status: 404, body: "Missing video" }));
+  await page.route("**/images/home/jiD.mp4", (route) => route.fulfill({ status: 404, body: "Missing video" }));
   await page.goto(`${basePath}/`);
   await expect(page.getByRole("heading", { name: "Turning imagination into reality" })).toBeVisible();
   await expect(page.getByRole("status")).toContainText("영상을 재생할 수 없어");
