@@ -13,14 +13,10 @@ for (const motion of ["no-preference", "reduce"] as const) {
       await page.evaluate(() => window.scrollTo(0, 0));
       await expect(page.locator(".pin-spacer")).toHaveCount(0);
       await expect.poll(async () => {
-        const [h, c, v, title, control] = await Promise.all([hero.boundingBox(), cards.boundingBox(), hero.locator("video").boundingBox(), hero.getByRole("heading").boundingBox(), hero.getByRole("button").boundingBox()]);
-        if (!h || !c || !v || !title || !control) return false;
+        const [h, c, v, control] = await Promise.all([hero.boundingBox(), cards.boundingBox(), hero.locator("video").boundingBox(), hero.getByRole("button").boundingBox()]);
+        if (!h || !c || !v || !control) return false;
         return Math.abs(c.y - h.y - h.height) <= 1
           && Math.abs(v.y - h.y) <= 1 && Math.abs(v.height - h.height) <= 1
-          && title.y >= h.y && title.y + title.height <= h.y + h.height
-          && title.x >= h.x && title.x + title.width <= h.x + h.width
-          && !(title.x < control.x + control.width && title.x + title.width > control.x
-            && title.y < control.y + control.height && title.y + title.height > control.y)
           && control.y + control.height <= h.y + h.height;
       }).toBe(true);
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);

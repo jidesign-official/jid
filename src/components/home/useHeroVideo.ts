@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 export function useHeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const wantedRef = useRef(false);
+  const endedRef = useRef(false);
   const syncRef = useRef<(() => void) | null>(null);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -16,12 +17,13 @@ export function useHeroVideo() {
     let inView = true;
     let hasError = false;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    endedRef.current = false;
     wantedRef.current = !motion.matches;
     video.muted = true;
 
     const sync = () => {
       if (disposed) return;
-      if (wantedRef.current && inView && !document.hidden && !hasError) {
+      if (wantedRef.current && !endedRef.current && inView && !document.hidden && !hasError) {
         // Autoplay can be rejected by power-saving/browser policy. Keep the
         // explicit play button usable instead of rejecting an unhandled promise.
         void video.play().catch(() => {
@@ -36,6 +38,7 @@ export function useHeroVideo() {
       if (disposed) return;
       // Keep the final frame visible and prevent visibility changes from
       // restarting a non-looping hero video after it has finished.
+      endedRef.current = true;
       wantedRef.current = false;
       setPlaying(false);
     };
@@ -44,7 +47,10 @@ export function useHeroVideo() {
       video.pause();
       if (!disposed) { setFailed(true); setPlaying(false); }
     };
-    const motionChanged = () => { wantedRef.current = !motion.matches; sync(); };
+    const motionChanged = () => {
+      if (!endedRef.current) wantedRef.current = !motion.matches;
+      sync();
+    };
     const observer = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
       sync();
@@ -75,8 +81,13 @@ export function useHeroVideo() {
   }, []);
 
   function togglePlayback() {
-    if (failed || !videoRef.current) return;
-    wantedRef.current = videoRef.current.paused;
+    const video = videoRef.current;
+    if (failed || !video) return;
+    if (video.ended) {
+      endedRef.current = false;
+      video.currentTime = 0;
+    }
+    wantedRef.current = video.paused;
     syncRef.current?.();
   }
 

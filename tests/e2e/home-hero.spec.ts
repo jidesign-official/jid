@@ -38,6 +38,28 @@ test("hero video stops on its final frame instead of looping", async ({ page }) 
   await expect(page.getByRole("button", { name: "영상 재생", exact: true })).toBeVisible();
 });
 
+test("ended video stays stopped when motion preferences change until explicit play", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto(`${basePath}/`);
+  const video = page.locator("main video");
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState >= 2 && v.duration > 0 && !v.loop), { timeout: 15_000 }).toBe(true);
+  await video.evaluate((v: HTMLVideoElement) => {
+    v.currentTime = Math.max(0, v.duration - 0.2);
+    void v.play();
+  });
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.ended && v.paused), { timeout: 5_000 }).toBe(true);
+  const finalTime = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
+  const waitForMediaChange = () => page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await waitForMediaChange();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await waitForMediaChange();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused && v.ended)).toBe(true);
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeGreaterThanOrEqual(finalTime - 0.05);
+  await page.getByRole("button", { name: "영상 재생", exact: true }).click();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused && !v.ended)).toBe(true);
+});
+
 test("video playback can be paused and resumed", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto(`${basePath}/`);

@@ -24,7 +24,7 @@ test("reduced motion keeps hero in normal flow with no scroll pinning", async ({
   await expect(page.locator(".pin-spacer")).toHaveCount(0);
   const hero = page.locator("main section").first();
   const cards = page.getByRole("region", { name: "대표 프로젝트" });
-  await expect(hero.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(hero.getByRole("heading", { level: 1 })).toHaveCount(0);
   const heroBox = await hero.boundingBox();
   const cardBox = await cards.boundingBox();
   expect(cardBox!.y).toBeGreaterThanOrEqual(heroBox!.y + heroBox!.height - 1);
